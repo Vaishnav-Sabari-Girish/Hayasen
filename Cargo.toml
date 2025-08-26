@@ -4,3 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+embedded-hal = "1.0.0"
+
+[features]
+default = ["mpu9250", "max30102"]
+mpu9250 = []
+max30102 = []
