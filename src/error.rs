@@ -1,4 +1,4 @@
-use std::fmt::{Debug, Formatter, Result};
+use core::fmt::{Debug, Formatter, Result};
 
 pub enum Error<E> {
     I2c(E),
