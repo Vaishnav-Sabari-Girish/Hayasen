@@ -2,6 +2,15 @@
 name = "hayasen"
 version = "0.1.0"
 edition = "2024"
+description = "A multi sensor library for Embedded Rust supporting multiple sensors"
+authors = ["Vaishnav-Sabari-Girish forgamesonly684@gmail.com"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/Vaishnav-Sabari-Girish/Hayasen"
+documentation = "https://github.com/Vaishnav-Sabari-Girish/Hayasen"   # Will change to docs.rs later
+keywords = ["embedded", "sensors", "driver", "no-std"]
+categories = ["embedded", "no-std", "hardware-support"]
+readme = "README.md"
+
 
 [dependencies]
 embedded-hal = "1.0.0"
