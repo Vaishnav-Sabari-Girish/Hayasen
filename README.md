@@ -1,3 +1,8 @@
+> [!WARNING]
+> This library has not been tested yet. 
+> Use at your own Risk
+
+
 # Hayasen 
 
 Hayasen is an Embedded Rust library that hopes to make using sensors in Embedded Rust easier than ever. 
@@ -16,5 +21,4 @@ Add `hayasen` library to your Cargo.toml as follows
 [dependencies]
 hayasen = { version = "*", features = ["mpu9250"]}   # If you are going to use Mpu9250 sensor
 ```
-
 

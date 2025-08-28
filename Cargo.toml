@@ -1,6 +1,6 @@
 [package]
 name = "hayasen"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2024"
 description = "A multi sensor library for Embedded Rust supporting multiple sensors"
 authors = ["Vaishnav-Sabari-Girish forgamesonly684@gmail.com"]
