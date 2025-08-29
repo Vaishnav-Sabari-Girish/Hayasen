@@ -1,7 +1,9 @@
 # Summary
 
 - [Introduction](./intro.md)
-- [Usage](./usage.md)
 - [Features](./features.md)
-- [Project Structure](./ps.md)
+- [Installation](./install.md)
+- [Usage](./usage.md)
+- [Development Notes](./dev_notes.md)
 - [Contributing](./contributing.md)
+- [License Information](./license_info.md)

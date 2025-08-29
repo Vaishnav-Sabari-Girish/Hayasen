@@ -1,23 +1,18 @@
-# Introduction
+## Introduction
 
-```admonish warning title="Warning: Early Development Stage", collapsible=true
-This library is currently under active development and has not been thoroughly tested.
-Use in production systems at your own risk. APIs may change without notice.
-```
+**Hayasen** is a lightweight, `no_std`-friendly Rust crate designed to provide a clean and modular interface
+for a wide range of sensors. While initial support focuses on the **MPU9250** inertial measurement unit (IMU),
+the architecture is built to easily extend to other sensors and communication protocols beyond I²C.
 
-## What is Hayasen
+This crate is ideal for:
 
-Hayasen is an Embedded Rust library designed to simplify sensor integration in embedded systems.
-It provides unified, type-safe interfaces for various sensors with a focus on ease of use and reliability.
+* **Embedded systems** running on microcontrollers (e.g., STM32, RP2040, ESP32, etc.).
+* **Bare-metal Rust** applications requiring efficient, hardware-safe abstraction layers.
+* Developers seeking **unified error handling**, modular sensor APIs, and minimal runtime overhead.
 
-### 🚀 Currently Supported Sensors
+Key highlights:
 
-- **MPU9250** : 9-axis motion tracking device (accelerometer, gyroscope, temperature) - *Work in Progress*
-
-                        
-## Stargazers over time
-[![Stargazers over time](https://starchart.cc/Vaishnav-Sabari-Girish/Hayasen.svg?variant=dark)](https://starchart.cc/Vaishnav-Sabari-Girish/Hayasen)
-
-
-## Stargazers (Thank you for starring this repository)
-[![Stargazers repo roster for @Vaishnav-Sabari-Girish/Hayasen](https://reporoster.com/stars/dark/Vaishnav-Sabari-Girish/Hayasen)](https://github.com/Vaishnav-Sabari-Girish/Hayasen/stargazers)
+* Extensible design for multiple sensor families.
+* Unified error management through a generic `Error<E>` enum.
+* Clear separation of concerns across modules for maintainability.
+* `no_std` support for resource-constrained environments.

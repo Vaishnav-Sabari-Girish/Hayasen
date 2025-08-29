@@ -1,77 +1,67 @@
-# Features
+# Features of Hayasen
 
-This section details the key features and capabilities provided by the `hayasen` library, along with
-future development plans.
+## Overview
 
-## Current Features
+Hayasen is designed to be a lightweight, modular sensor driver crate with a focus on embedded systems. It aims to provide a unified interface for interacting with various sensors, starting with I²C-based devices and expanding to support other communication protocols in future releases.
 
-- `mpu9250` - Enables comprehensive support for the MPU9250 motion sensor. This includes functionalities
-for reading accelerometer, gyroscope, and magnetometer data, as well as configuration options for various
-operating modes. (Enabled by default)
+---
 
-## Future Plans
+## Key Features
 
-### 🔮 Roadmap
+### 1. **Unified Error Handling**
 
-#### 🎯 Short-term Goals (v0.2.0 - v0.5.0)
+* Centralized `Error` enum for consistent error reporting across all drivers.
+* Distinguishes between:
 
-- [ ] **Complete MPU9250 implementation and testing**
-  - [ ] Magnetometer support (AK8963)
-  - [ ] Self-test functionality
-  - [ ] Motion detection interrupts
-  - [ ] FIFO buffer support
-  - [ ] Comprehensive unit tests
-  - [ ] Integration tests with hardware
+  * Low-level I²C errors
+  * Data integrity issues
+  * Configuration and initialization failures
+  * Sensor-specific errors
+* Convenience methods (`is_i2c_error`, `is_config_error`, `into_i2c_error`) for error inspection and recovery.
 
-- [ ] **Add comprehensive test suite**
-  - [ ] Unit tests for all public APIs
-  - [ ] Integration tests with mock I2C
-  - [ ] Hardware-in-the-loop testing
-  - [ ] Continuous integration setup
-  - [ ] Code coverage reporting
+### 2. **MPU9250 Sensor Support**
 
-- [ ] **Create more usage examples**
-  - [ ] Basic sensor reading example
-  - [ ] Interrupt-driven motion detection
-  - [ ] Data logging application
-  - [ ] Multi-sensor fusion example
-  - [ ] RTOS integration examples
+* Initial implementation supports the MPU9250 IMU sensor.
+* Provides methods for:
 
-#### 🚀 Medium-term Goals (v0.6.0 - v0.9.0)
+  * Initialization and configuration of accelerometer, gyroscope, and magnetometer.
+  * Reading raw and processed data from all sensor units.
+  * Power management (e.g., wake/sleep modes).
+* Modular driver structure allows easy adaptation to similar IMU devices.
 
-- [ ] **Add MAX30102 heart rate sensor support**
-  - [ ] Heart rate monitoring
-  - [ ] Oxygen saturation (SpO2) measurement
-  - [ ] FIFO data reading
-  - [ ] Interrupt configuration
-  - [ ] Temperature reading
+### 3. **Modular Design for Sensor Expansion**
 
-- [ ] **Add CI/CD pipeline**
-  - [ ] GitHub Actions for testing
-  - [ ] Automated documentation deployment
-  - [ ] Release automation
-  - [ ] Crate publishing automation
-  - [ ] Cross-compilation testing
+* Core library is structured to support additional sensors without rewriting core logic.
+* Shared abstractions for configuration, data reading, and error handling.
+* Planned future support for:
 
-#### 🌟 Long-term Goals (v1.0.0+)
+  * SPI-based sensors
+  * Analog sensors (via ADC interfaces)
+  * Digital sensors beyond I²C.
 
-- [ ] **Support for more sensor types**
-  - [ ] BME280 (Temperature, Humidity, Pressure)
-  - [ ] BMP180/BMP280 (Pressure)
-  - [ ] HMC5883L (Magnetometer)
-  - [ ] ADXL345 (Accelerometer)
-  - [ ] TMP36/TMP102 (Temperature)
+### 4. **Lightweight and `no_std` Compatible**
 
-- [ ] **Advanced features**
-  - [ ] Sensor fusion algorithms
-  - [ ] Power management utilities
-  - [ ] Async/await support
-  - [ ] No-alloc mode for tiny systems
-  - [ ] WebAssembly support for simulation
+* Designed for embedded environments with constrained resources.
+* Avoids allocations and unnecessary dependencies.
+* Compatible with `no_std` for use in bare-metal microcontrollers.
 
-- [ ] **Ecosystem integration**
-  - [ ] Embassy framework support
-  - [ ] RTIC framework integration
-  - [ ] defmt logging support
-  - [ ] Probe-rs debugging support
-  - [ ] Platform-agnostic drivers
+### 5. **Extensible Configuration System**
+
+* Supports runtime configuration of sensor parameters.
+* Designed to allow sensor-specific tuning (e.g., sensitivity ranges, filter settings).
+* Provides error reporting for invalid configurations via `Error::ConfigError`.
+
+### 6. **Developer-Friendly API**
+
+* Intuitive function naming and structured module layout.
+* Encourages readable, idiomatic Rust code.
+* Provides clear debugging output via `Debug` trait implementations.
+
+---
+
+## Future Features (Planned)
+
+* Support for additional sensors (environmental, proximity, etc.).
+* Integration with `embedded-hal` traits for seamless compatibility with Rust embedded ecosystem.
+* Optional calibration utilities and sensor fusion algorithms.
+* Benchmarking and performance profiling tools for real-time applications.
