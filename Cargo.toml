@@ -1,12 +1,12 @@
 [package]
 name = "hayasen"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2024"
 description = "A multi sensor library for Embedded Rust supporting multiple sensors"
 authors = ["Vaishnav-Sabari-Girish forgamesonly684@gmail.com"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/Vaishnav-Sabari-Girish/Hayasen"
-documentation = "https://docs.rs/hayasen"
+documentation = "http://vaishnav.world/Hayasen/"
 keywords = ["embedded", "sensors", "driver", "no-std"]
 categories = ["embedded", "no-std", "hardware-support"]
 readme = "README.md"
