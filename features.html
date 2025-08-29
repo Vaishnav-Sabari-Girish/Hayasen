@@ -170,166 +170,99 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="features"><a class="header" href="#features">Features</a></h1>
-<p>This section details the key features and capabilities provided by the <code>hayasen</code> library, along with
-future development plans.</p>
-<h2 id="current-features"><a class="header" href="#current-features">Current Features</a></h2>
-<ul>
-<li><code>mpu9250</code> - Enables comprehensive support for the MPU9250 motion sensor. This includes functionalities
-for reading accelerometer, gyroscope, and magnetometer data, as well as configuration options for various
-operating modes. (Enabled by default)</li>
-</ul>
-<h2 id="future-plans"><a class="header" href="#future-plans">Future Plans</a></h2>
-<h3 id="-roadmap"><a class="header" href="#-roadmap">🔮 Roadmap</a></h3>
-<h4 id="-short-term-goals-v020---v050"><a class="header" href="#-short-term-goals-v020---v050">🎯 Short-term Goals (v0.2.0 - v0.5.0)</a></h4>
+                        <h1 id="features-of-hayasen"><a class="header" href="#features-of-hayasen">Features of Hayasen</a></h1>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>Hayasen is designed to be a lightweight, modular sensor driver crate with a focus on embedded systems. It aims to provide a unified interface for interacting with various sensors, starting with I²C-based devices and expanding to support other communication protocols in future releases.</p>
+<hr />
+<h2 id="key-features"><a class="header" href="#key-features">Key Features</a></h2>
+<h3 id="1-unified-error-handling"><a class="header" href="#1-unified-error-handling">1. <strong>Unified Error Handling</strong></a></h3>
 <ul>
 <li>
-<p><input disabled="" type="checkbox"/>
-<strong>Complete MPU9250 implementation and testing</strong></p>
+<p>Centralized <code>Error</code> enum for consistent error reporting across all drivers.</p>
+</li>
+<li>
+<p>Distinguishes between:</p>
 <ul>
-<li><input disabled="" type="checkbox"/>
-Magnetometer support (AK8963)</li>
-<li><input disabled="" type="checkbox"/>
-Self-test functionality</li>
-<li><input disabled="" type="checkbox"/>
-Motion detection interrupts</li>
-<li><input disabled="" type="checkbox"/>
-FIFO buffer support</li>
-<li><input disabled="" type="checkbox"/>
-Comprehensive unit tests</li>
-<li><input disabled="" type="checkbox"/>
-Integration tests with hardware</li>
+<li>Low-level I²C errors</li>
+<li>Data integrity issues</li>
+<li>Configuration and initialization failures</li>
+<li>Sensor-specific errors</li>
 </ul>
 </li>
 <li>
-<p><input disabled="" type="checkbox"/>
-<strong>Add comprehensive test suite</strong></p>
+<p>Convenience methods (<code>is_i2c_error</code>, <code>is_config_error</code>, <code>into_i2c_error</code>) for error inspection and recovery.</p>
+</li>
+</ul>
+<h3 id="2-mpu9250-sensor-support"><a class="header" href="#2-mpu9250-sensor-support">2. <strong>MPU9250 Sensor Support</strong></a></h3>
 <ul>
-<li><input disabled="" type="checkbox"/>
-Unit tests for all public APIs</li>
-<li><input disabled="" type="checkbox"/>
-Integration tests with mock I2C</li>
-<li><input disabled="" type="checkbox"/>
-Hardware-in-the-loop testing</li>
-<li><input disabled="" type="checkbox"/>
-Continuous integration setup</li>
-<li><input disabled="" type="checkbox"/>
-Code coverage reporting</li>
+<li>
+<p>Initial implementation supports the MPU9250 IMU sensor.</p>
+</li>
+<li>
+<p>Provides methods for:</p>
+<ul>
+<li>Initialization and configuration of accelerometer, gyroscope, and magnetometer.</li>
+<li>Reading raw and processed data from all sensor units.</li>
+<li>Power management (e.g., wake/sleep modes).</li>
 </ul>
 </li>
 <li>
-<p><input disabled="" type="checkbox"/>
-<strong>Create more usage examples</strong></p>
-<ul>
-<li><input disabled="" type="checkbox"/>
-Basic sensor reading example</li>
-<li><input disabled="" type="checkbox"/>
-Interrupt-driven motion detection</li>
-<li><input disabled="" type="checkbox"/>
-Data logging application</li>
-<li><input disabled="" type="checkbox"/>
-Multi-sensor fusion example</li>
-<li><input disabled="" type="checkbox"/>
-RTOS integration examples</li>
-</ul>
+<p>Modular driver structure allows easy adaptation to similar IMU devices.</p>
 </li>
 </ul>
-<h4 id="-medium-term-goals-v060---v090"><a class="header" href="#-medium-term-goals-v060---v090">🚀 Medium-term Goals (v0.6.0 - v0.9.0)</a></h4>
+<h3 id="3-modular-design-for-sensor-expansion"><a class="header" href="#3-modular-design-for-sensor-expansion">3. <strong>Modular Design for Sensor Expansion</strong></a></h3>
 <ul>
 <li>
-<p><input disabled="" type="checkbox"/>
-<strong>Add MAX30102 heart rate sensor support</strong></p>
-<ul>
-<li><input disabled="" type="checkbox"/>
-Heart rate monitoring</li>
-<li><input disabled="" type="checkbox"/>
-Oxygen saturation (SpO2) measurement</li>
-<li><input disabled="" type="checkbox"/>
-FIFO data reading</li>
-<li><input disabled="" type="checkbox"/>
-Interrupt configuration</li>
-<li><input disabled="" type="checkbox"/>
-Temperature reading</li>
-</ul>
+<p>Core library is structured to support additional sensors without rewriting core logic.</p>
 </li>
 <li>
-<p><input disabled="" type="checkbox"/>
-<strong>Add CI/CD pipeline</strong></p>
-<ul>
-<li><input disabled="" type="checkbox"/>
-GitHub Actions for testing</li>
-<li><input disabled="" type="checkbox"/>
-Automated documentation deployment</li>
-<li><input disabled="" type="checkbox"/>
-Release automation</li>
-<li><input disabled="" type="checkbox"/>
-Crate publishing automation</li>
-<li><input disabled="" type="checkbox"/>
-Cross-compilation testing</li>
-</ul>
-</li>
-</ul>
-<h4 id="-long-term-goals-v100"><a class="header" href="#-long-term-goals-v100">🌟 Long-term Goals (v1.0.0+)</a></h4>
-<ul>
-<li>
-<p><input disabled="" type="checkbox"/>
-<strong>Support for more sensor types</strong></p>
-<ul>
-<li><input disabled="" type="checkbox"/>
-BME280 (Temperature, Humidity, Pressure)</li>
-<li><input disabled="" type="checkbox"/>
-BMP180/BMP280 (Pressure)</li>
-<li><input disabled="" type="checkbox"/>
-HMC5883L (Magnetometer)</li>
-<li><input disabled="" type="checkbox"/>
-ADXL345 (Accelerometer)</li>
-<li><input disabled="" type="checkbox"/>
-TMP36/TMP102 (Temperature)</li>
-</ul>
+<p>Shared abstractions for configuration, data reading, and error handling.</p>
 </li>
 <li>
-<p><input disabled="" type="checkbox"/>
-<strong>Advanced features</strong></p>
+<p>Planned future support for:</p>
 <ul>
-<li><input disabled="" type="checkbox"/>
-Sensor fusion algorithms</li>
-<li><input disabled="" type="checkbox"/>
-Power management utilities</li>
-<li><input disabled="" type="checkbox"/>
-Async/await support</li>
-<li><input disabled="" type="checkbox"/>
-No-alloc mode for tiny systems</li>
-<li><input disabled="" type="checkbox"/>
-WebAssembly support for simulation</li>
+<li>SPI-based sensors</li>
+<li>Analog sensors (via ADC interfaces)</li>
+<li>Digital sensors beyond I²C.</li>
 </ul>
 </li>
-<li>
-<p><input disabled="" type="checkbox"/>
-<strong>Ecosystem integration</strong></p>
-<ul>
-<li><input disabled="" type="checkbox"/>
-Embassy framework support</li>
-<li><input disabled="" type="checkbox"/>
-RTIC framework integration</li>
-<li><input disabled="" type="checkbox"/>
-defmt logging support</li>
-<li><input disabled="" type="checkbox"/>
-Probe-rs debugging support</li>
-<li><input disabled="" type="checkbox"/>
-Platform-agnostic drivers</li>
 </ul>
-</li>
+<h3 id="4-lightweight-and-no_std-compatible"><a class="header" href="#4-lightweight-and-no_std-compatible">4. <strong>Lightweight and <code>no_std</code> Compatible</strong></a></h3>
+<ul>
+<li>Designed for embedded environments with constrained resources.</li>
+<li>Avoids allocations and unnecessary dependencies.</li>
+<li>Compatible with <code>no_std</code> for use in bare-metal microcontrollers.</li>
+</ul>
+<h3 id="5-extensible-configuration-system"><a class="header" href="#5-extensible-configuration-system">5. <strong>Extensible Configuration System</strong></a></h3>
+<ul>
+<li>Supports runtime configuration of sensor parameters.</li>
+<li>Designed to allow sensor-specific tuning (e.g., sensitivity ranges, filter settings).</li>
+<li>Provides error reporting for invalid configurations via <code>Error::ConfigError</code>.</li>
+</ul>
+<h3 id="6-developer-friendly-api"><a class="header" href="#6-developer-friendly-api">6. <strong>Developer-Friendly API</strong></a></h3>
+<ul>
+<li>Intuitive function naming and structured module layout.</li>
+<li>Encourages readable, idiomatic Rust code.</li>
+<li>Provides clear debugging output via <code>Debug</code> trait implementations.</li>
+</ul>
+<hr />
+<h2 id="future-features-planned"><a class="header" href="#future-features-planned">Future Features (Planned)</a></h2>
+<ul>
+<li>Support for additional sensors (environmental, proximity, etc.).</li>
+<li>Integration with <code>embedded-hal</code> traits for seamless compatibility with Rust embedded ecosystem.</li>
+<li>Optional calibration utilities and sensor fusion algorithms.</li>
+<li>Benchmarking and performance profiling tools for real-time applications.</li>
 </ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="usage.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="ps.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="install.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -339,11 +272,11 @@ Platform-agnostic drivers</li>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="usage.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="ps.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="install.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

@@ -171,220 +171,1377 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<details id="admonition-warning-early-development-stage" class="admonition admonish-warning" role="note" aria-labelledby="admonition-warning-early-development-stage-title">
-<summary class="admonition-title">
-<div id="admonition-warning-early-development-stage-title">
-<p>Warning: Early Development Stage</p>
-</div>
-<a class="admonition-anchor-link" href="intro.html#admonition-warning-early-development-stage"></a>
-</summary>
-<div>
-<p>This library is currently under active development and has not been thoroughly tested.
-Use in production systems at your own risk. APIs may change without notice.</p>
-</div>
-</details>
-<h2 id="what-is-hayasen"><a class="header" href="#what-is-hayasen">What is Hayasen</a></h2>
-<p>Hayasen is an Embedded Rust library designed to simplify sensor integration in embedded systems.
-It provides unified, type-safe interfaces for various sensors with a focus on ease of use and reliability.</p>
-<h3 id="-currently-supported-sensors"><a class="header" href="#-currently-supported-sensors">🚀 Currently Supported Sensors</a></h3>
+                        <h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<p><strong>Hayasen</strong> is a lightweight, <code>no_std</code>-friendly Rust crate designed to provide a clean and modular interface
+for a wide range of sensors. While initial support focuses on the <strong>MPU9250</strong> inertial measurement unit (IMU),
+the architecture is built to easily extend to other sensors and communication protocols beyond I²C.</p>
+<p>This crate is ideal for:</p>
 <ul>
-<li><strong>MPU9250</strong> : 9-axis motion tracking device (accelerometer, gyroscope, temperature) - <em>Work in Progress</em></li>
+<li><strong>Embedded systems</strong> running on microcontrollers (e.g., STM32, RP2040, ESP32, etc.).</li>
+<li><strong>Bare-metal Rust</strong> applications requiring efficient, hardware-safe abstraction layers.</li>
+<li>Developers seeking <strong>unified error handling</strong>, modular sensor APIs, and minimal runtime overhead.</li>
 </ul>
-<h2 id="stargazers-over-time"><a class="header" href="#stargazers-over-time">Stargazers over time</a></h2>
-<p><a href="https://starchart.cc/Vaishnav-Sabari-Girish/Hayasen"><img src="https://starchart.cc/Vaishnav-Sabari-Girish/Hayasen.svg?variant=dark" alt="Stargazers over time" /></a></p>
-<h2 id="stargazers-thank-you-for-starring-this-repository"><a class="header" href="#stargazers-thank-you-for-starring-this-repository">Stargazers (Thank you for starring this repository)</a></h2>
-<p><a href="https://github.com/Vaishnav-Sabari-Girish/Hayasen/stargazers"><img src="https://reporoster.com/stars/dark/Vaishnav-Sabari-Girish/Hayasen" alt="Stargazers repo roster for @Vaishnav-Sabari-Girish/Hayasen" /></a></p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="usage"><a class="header" href="#usage">Usage</a></h1>
-<h2 id="-installation"><a class="header" href="#-installation">📦 Installation</a></h2>
-<p>Add <code>hayasen</code> to your <code>Cargo.toml</code> either by the below command or directly.</p>
-<pre><code class="language-bash"># Command Line
-cargo add hayasen --features mpu9250    #Optional for now
+<p>Key highlights:</p>
+<ul>
+<li>Extensible design for multiple sensor families.</li>
+<li>Unified error management through a generic <code>Error&lt;E&gt;</code> enum.</li>
+<li>Clear separation of concerns across modules for maintainability.</li>
+<li><code>no_std</code> support for resource-constrained environments.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="features-of-hayasen"><a class="header" href="#features-of-hayasen">Features of Hayasen</a></h1>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>Hayasen is designed to be a lightweight, modular sensor driver crate with a focus on embedded systems. It aims to provide a unified interface for interacting with various sensors, starting with I²C-based devices and expanding to support other communication protocols in future releases.</p>
+<hr />
+<h2 id="key-features"><a class="header" href="#key-features">Key Features</a></h2>
+<h3 id="1-unified-error-handling"><a class="header" href="#1-unified-error-handling">1. <strong>Unified Error Handling</strong></a></h3>
+<ul>
+<li>
+<p>Centralized <code>Error</code> enum for consistent error reporting across all drivers.</p>
+</li>
+<li>
+<p>Distinguishes between:</p>
+<ul>
+<li>Low-level I²C errors</li>
+<li>Data integrity issues</li>
+<li>Configuration and initialization failures</li>
+<li>Sensor-specific errors</li>
+</ul>
+</li>
+<li>
+<p>Convenience methods (<code>is_i2c_error</code>, <code>is_config_error</code>, <code>into_i2c_error</code>) for error inspection and recovery.</p>
+</li>
+</ul>
+<h3 id="2-mpu9250-sensor-support"><a class="header" href="#2-mpu9250-sensor-support">2. <strong>MPU9250 Sensor Support</strong></a></h3>
+<ul>
+<li>
+<p>Initial implementation supports the MPU9250 IMU sensor.</p>
+</li>
+<li>
+<p>Provides methods for:</p>
+<ul>
+<li>Initialization and configuration of accelerometer, gyroscope, and magnetometer.</li>
+<li>Reading raw and processed data from all sensor units.</li>
+<li>Power management (e.g., wake/sleep modes).</li>
+</ul>
+</li>
+<li>
+<p>Modular driver structure allows easy adaptation to similar IMU devices.</p>
+</li>
+</ul>
+<h3 id="3-modular-design-for-sensor-expansion"><a class="header" href="#3-modular-design-for-sensor-expansion">3. <strong>Modular Design for Sensor Expansion</strong></a></h3>
+<ul>
+<li>
+<p>Core library is structured to support additional sensors without rewriting core logic.</p>
+</li>
+<li>
+<p>Shared abstractions for configuration, data reading, and error handling.</p>
+</li>
+<li>
+<p>Planned future support for:</p>
+<ul>
+<li>SPI-based sensors</li>
+<li>Analog sensors (via ADC interfaces)</li>
+<li>Digital sensors beyond I²C.</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-lightweight-and-no_std-compatible"><a class="header" href="#4-lightweight-and-no_std-compatible">4. <strong>Lightweight and <code>no_std</code> Compatible</strong></a></h3>
+<ul>
+<li>Designed for embedded environments with constrained resources.</li>
+<li>Avoids allocations and unnecessary dependencies.</li>
+<li>Compatible with <code>no_std</code> for use in bare-metal microcontrollers.</li>
+</ul>
+<h3 id="5-extensible-configuration-system"><a class="header" href="#5-extensible-configuration-system">5. <strong>Extensible Configuration System</strong></a></h3>
+<ul>
+<li>Supports runtime configuration of sensor parameters.</li>
+<li>Designed to allow sensor-specific tuning (e.g., sensitivity ranges, filter settings).</li>
+<li>Provides error reporting for invalid configurations via <code>Error::ConfigError</code>.</li>
+</ul>
+<h3 id="6-developer-friendly-api"><a class="header" href="#6-developer-friendly-api">6. <strong>Developer-Friendly API</strong></a></h3>
+<ul>
+<li>Intuitive function naming and structured module layout.</li>
+<li>Encourages readable, idiomatic Rust code.</li>
+<li>Provides clear debugging output via <code>Debug</code> trait implementations.</li>
+</ul>
+<hr />
+<h2 id="future-features-planned"><a class="header" href="#future-features-planned">Future Features (Planned)</a></h2>
+<ul>
+<li>Support for additional sensors (environmental, proximity, etc.).</li>
+<li>Integration with <code>embedded-hal</code> traits for seamless compatibility with Rust embedded ecosystem.</li>
+<li>Optional calibration utilities and sensor fusion algorithms.</li>
+<li>Benchmarking and performance profiling tools for real-time applications.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="installation-guide-for-hayasen"><a class="header" href="#installation-guide-for-hayasen">Installation Guide for Hayasen</a></h1>
+<h2 id="1-prerequisites"><a class="header" href="#1-prerequisites">1. Prerequisites</a></h2>
+<ul>
+<li>
+<p><strong>Rust Toolchain</strong>: Ensure that Rust (with Cargo) is installed. You can install it using:</p>
+<pre><code class="language-bash">curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 </code></pre>
-<p><code>Cargo.toml</code></p>
+</li>
+<li>
+<p><strong>Embedded Development Setup</strong>:</p>
+<ul>
+<li>
+<p>Install the target for your microcontroller (e.g., ARM Cortex-M):</p>
+<pre><code class="language-bash">rustup target add thumbv7em-none-eabihf
+</code></pre>
+</li>
+<li>
+<p>Ensure you have an appropriate linker and build tools installed.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Optional</strong>: For cross-compilation, tools like <code>probe-rs</code> or <code>cargo-embed</code> can be used.</p>
+</li>
+</ul>
+<hr />
+<h2 id="2-adding-hayasen-to-your-project"><a class="header" href="#2-adding-hayasen-to-your-project">2. Adding Hayasen to Your Project</a></h2>
+<h3 id="option-a-using-cargotoml"><a class="header" href="#option-a-using-cargotoml">Option A: Using <code>Cargo.toml</code></a></h3>
+<p>Add the following line to your project's <code>Cargo.toml</code> under <code>[dependencies]</code>:</p>
 <pre><code class="language-toml">[dependencies]
-hayasen = { version = "*", features = ["mpu9250"] }   # For MPU9250 support
+hayasen = { git = "https://github.com/Vaishnav-Sabari-Girish/Hayasen" }
 </code></pre>
-<h2 id="-quick-start"><a class="header" href="#-quick-start">🎯 Quick Start</a></h2>
-<p>Here is a basic example of <code>hayasen</code> (Not Yet Tested on actual Hardware)</p>
-<pre><pre class="playground"><code class="language-rust">use hayasen::prelude::*;
-use embedded_hal::i2c::I2c;
+<h3 id="option-b-using-cargo-add"><a class="header" href="#option-b-using-cargo-add">Option B: Using <code>cargo add</code></a></h3>
+<p>You can add Hayasen directly via Cargo command:</p>
+<pre><code class="language-bash">cargo add --git https://github.com/Vaishnav-Sabari-Girish/Hayasen
+</code></pre>
+<p>This ensures that your project is always linked to the latest version of the crate.</p>
+<hr />
+<h2 id="3-building-documentation-optional-but-recommended"><a class="header" href="#3-building-documentation-optional-but-recommended">3. Building Documentation (Optional but Recommended)</a></h2>
+<p>To view the crate's documentation locally:</p>
+<pre><code class="language-bash">cargo doc --open
+</code></pre>
+<p>This command builds and opens the documentation in your browser.</p>
+<hr />
+<h2 id="4-example-environment-setup"><a class="header" href="#4-example-environment-setup">4. Example Environment Setup</a></h2>
+<p>A minimal <code>Cargo.toml</code> for a project using Hayasen might look like:</p>
+<pre><code class="language-toml">[package]
+name = "sensor_app"
+version = "0.1.0"
+edition = "2021"
 
-fn main() -&gt; Result&lt;(), Error&lt;MyI2CError&gt;&gt; {
-    // Easy initialization with default settings
-    let mut mpu = HayasenFunctions::create_mpu9250_default(i2c, 0x68)?;
+[dependencies]
+hayasen = { git = "https://github.com/Vaishnav-Sabari-Girish/Hayasen" }
+embedded-hal = "0.2"
+</code></pre>
+<hr />
+<h2 id="5-verifying-installation"><a class="header" href="#5-verifying-installation">5. Verifying Installation</a></h2>
+<p>Run a test build to ensure everything is set up correctly:</p>
+<pre><code class="language-bash">cargo build --target thumbv7em-none-eabihf
+</code></pre>
+<p>If successful, you're ready to start integrating Hayasen with your embedded projects.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mpu9250-usage-guide"><a class="header" href="#mpu9250-usage-guide">MPU9250 Usage Guide</a></h1>
+<h2 id="overview-1"><a class="header" href="#overview-1">Overview</a></h2>
+<p>The Hayasen MPU9250 library provides a comprehensive interface for working with the MPU9250 9-axis motion tracking device. This guide demonstrates how to use the library in various scenarios, from basic sensor reading to advanced configuration.</p>
+<div id="admonition-please-note" class="admonition admonish-note" role="note" aria-labelledby="admonition-please-note-title">
+<div class="admonition-title">
+<div id="admonition-please-note-title">
+<p>Please Note</p>
+</div>
+<a class="admonition-anchor-link" href="usage.html#admonition-please-note"></a>
+</div>
+<div>
+<p>Please note that the I2C instance used here currently is of datatype <code>TWIM</code> which corresponds to the I2C instance of a nRF Nordic microcontroller.
+So basically <code>hayasen</code> currently only supports Nordic Microcontrollers</p>
+</div>
+</div>
+<h2 id="basic-usage"><a class="header" href="#basic-usage">Basic Usage</a></h2>
+<h3 id="quick-start-with-default-configuration"><a class="header" href="#quick-start-with-default-configuration">Quick Start with Default Configuration</a></h3>
+<p>The simplest way to get started is using the <code>create_default</code> function from the <code>mpu9250_hayasen</code> module:</p>
+<pre><pre class="playground"><code class="language-rust">use hayasen::prelude::*;
+use hayasen::mpu9250_hayasen;
+
+fn main() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    // Assume you have an I2C peripheral instance
+    let i2c = setup_i2c(); // Your platform-specific I2C setup
+    let mpu_address = 0x68; // Default MPU9250 I2C address
     
-    // Read sensor data
-    let acceleration = HayasenFunctions::read_accel(&amp;mut mpu)?;
-    let temperature = HayasenFunctions::read_temp_c(&amp;mut mpu)?;
+    // Create sensor with default configuration (2G accel, 250 DPS gyro)
+    let mut sensor = mpu9250_hayasen::create_default(i2c, mpu_address)?;
     
-    println!("Temperature: {:.1}°C", temperature);
-    println!("Acceleration: {:?} g", acceleration);
+    // Read all sensor data
+    let (temperature, acceleration, angular_velocity) = mpu9250_hayasen::read_all(&amp;mut sensor)?;
+    
+    println!("Temperature: {:.2}°C", temperature);
+    println!("Acceleration [X, Y, Z]: [{:.3}, {:.3}, {:.3}] g", 
+             acceleration[0], acceleration[1], acceleration[2]);
+    println!("Angular Velocity [X, Y, Z]: [{:.3}, {:.3}, {:.3}] dps", 
+             angular_velocity[0], angular_velocity[1], angular_velocity[2]);
     
     Ok(())
 }</code></pre></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="features"><a class="header" href="#features">Features</a></h1>
-<p>This section details the key features and capabilities provided by the <code>hayasen</code> library, along with
-future development plans.</p>
-<h2 id="current-features"><a class="header" href="#current-features">Current Features</a></h2>
+<h3 id="individual-sensor-readings"><a class="header" href="#individual-sensor-readings">Individual Sensor Readings</a></h3>
+<p>You can read each sensor independently:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+use hayasen::mpu9250_hayasen;
+
+fn read_individual_sensors() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = mpu9250_hayasen::create_default(i2c, 0x68)?;
+    
+    // Read acceleration only
+    let accel = mpu9250_hayasen::read_acceleration(&amp;mut sensor)?;
+    println!("Acceleration: X={:.3}g, Y={:.3}g, Z={:.3}g", accel[0], accel[1], accel[2]);
+    
+    // Read gyroscope only
+    let gyro = mpu9250_hayasen::read_angular_velocity(&amp;mut sensor)?;
+    println!("Angular Velocity: X={:.3}°/s, Y={:.3}°/s, Z={:.3}°/s", gyro[0], gyro[1], gyro[2]);
+    
+    // Read temperature only
+    let temp = mpu9250_hayasen::read_temperature(&amp;mut sensor)?;
+    println!("Temperature: {:.2}°C", temp);
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="advanced-configuration"><a class="header" href="#advanced-configuration">Advanced Configuration</a></h2>
+<h3 id="manual-sensor-setup"><a class="header" href="#manual-sensor-setup">Manual Sensor Setup</a></h3>
+<p>For more control over sensor configuration, use the direct API:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn advanced_setup() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    
+    // Manual initialization with custom ranges
+    sensor.initialize_sensor(
+        AccelRange::Range8G,      // Higher acceleration range
+        GyroRange::Range1000Dps   // Higher angular velocity range
+    )?;
+    
+    // Configure sample rate (divider from 1kHz base rate)
+    // Sample rate = 1000Hz / (1 + divider)
+    sensor.set_sample_rate(9)?; // 100Hz sample rate
+    
+    // Configure digital low-pass filter
+    sensor.set_dlpf_config(DlpfConfig::Bandwidth184Hz)?;
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="reading-raw-data"><a class="header" href="#reading-raw-data">Reading Raw Data</a></h3>
+<p>For applications requiring raw ADC values:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn read_raw_data() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    sensor.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
+    
+    // Read raw 16-bit values
+    let raw_accel = sensor.read_accel_raw()?;
+    let raw_gyro = sensor.read_gyro_raw()?;
+    let raw_temp = sensor.read_temp_raw()?;
+    
+    println!("Raw Accelerometer: X={}, Y={}, Z={}", raw_accel[0], raw_accel[1], raw_accel[2]);
+    println!("Raw Gyroscope: X={}, Y={}, Z={}", raw_gyro[0], raw_gyro[1], raw_gyro[2]);
+    println!("Raw Temperature: {}", raw_temp);
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="power-management"><a class="header" href="#power-management">Power Management</a></h2>
+<h3 id="sleep-mode-operation"><a class="header" href="#sleep-mode-operation">Sleep Mode Operation</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn power_management_example() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    sensor.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
+    
+    // Normal operation
+    let data = sensor.read_acceleration()?;
+    println!("Before sleep: {:?}", data);
+    
+    // Enter sleep mode to save power
+    sensor.enter_sleep_mode()?;
+    println!("Sensor in sleep mode");
+    
+    // Wake up and resume operation
+    sensor.wake_up()?;
+    
+    // Read data after waking up
+    let data_after_wake = sensor.read_acceleration()?;
+    println!("After wake: {:?}", data_after_wake);
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="real-world-applications"><a class="header" href="#real-world-applications">Real-World Applications</a></h2>
+<h3 id="motion-detection-example"><a class="header" href="#motion-detection-example">Motion Detection Example</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+use hayasen::mpu9250_hayasen;
+
+fn motion_detection_loop() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = mpu9250_hayasen::create_default(i2c, 0x68)?;
+    
+    // Motion detection thresholds
+    const ACCEL_THRESHOLD: f32 = 0.1; // g
+    const GYRO_THRESHOLD: f32 = 5.0;  // degrees per second
+    
+    loop {
+        let (temp, accel, gyro) = mpu9250_hayasen::read_all(&amp;mut sensor)?;
+        
+        // Calculate total acceleration magnitude (subtract gravity)
+        let total_accel = (accel[0].powi(2) + accel[1].powi(2) + accel[2].powi(2)).sqrt();
+        let motion_accel = (total_accel - 1.0).abs(); // Subtract 1g gravity
+        
+        // Calculate total angular velocity
+        let total_gyro = (gyro[0].powi(2) + gyro[1].powi(2) + gyro[2].powi(2)).sqrt();
+        
+        // Detect motion
+        if motion_accel &gt; ACCEL_THRESHOLD || total_gyro &gt; GYRO_THRESHOLD {
+            println!("Motion detected! Accel: {:.3}g, Gyro: {:.3}°/s", motion_accel, total_gyro);
+        }
+        
+        // Small delay between readings
+        delay_ms(50);
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="data-logging-example"><a class="header" href="#data-logging-example">Data Logging Example</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn data_logging_example() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    
+    // Configure for high-precision data logging
+    sensor.initialize_sensor(AccelRange::Range4G, GyroRange::Range500Dps)?;
+    sensor.set_sample_rate(19)?; // 50Hz sampling
+    sensor.set_dlpf_config(DlpfConfig::Bandwidth184Hz)?;
+    
+    let mut sample_count = 0;
+    const MAX_SAMPLES: usize = 1000;
+    
+    while sample_count &lt; MAX_SAMPLES {
+        let timestamp = get_timestamp(); // Your platform-specific timestamp
+        let accel = sensor.read_acceleration()?;
+        let gyro = sensor.read_angular_velocity()?;
+        let temp = sensor.read_temperature_celsius()?;
+        
+        // Log data (implement your own logging mechanism)
+        log_data(timestamp, accel, gyro, temp);
+        
+        sample_count += 1;
+        delay_ms(20); // 50Hz sampling
+    }
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="configuration-options"><a class="header" href="#configuration-options">Configuration Options</a></h2>
+<h3 id="accelerometer-ranges"><a class="header" href="#accelerometer-ranges">Accelerometer Ranges</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+// Available accelerometer ranges and their use cases
+fn configure_accelerometer_ranges() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    
+    // Choose range based on application:
+    
+    // For precise, low-acceleration measurements (e.g., tilt sensing)
+    sensor.setup_accelerometer(AccelRange::Range2G)?;
+    
+    // For general motion detection
+    sensor.setup_accelerometer(AccelRange::Range4G)?;
+    
+    // For high-impact applications (e.g., crash detection)
+    sensor.setup_accelerometer(AccelRange::Range8G)?;
+    
+    // For extreme acceleration measurements
+    sensor.setup_accelerometer(AccelRange::Range16G)?;
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="gyroscope-ranges"><a class="header" href="#gyroscope-ranges">Gyroscope Ranges</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn configure_gyroscope_ranges() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    
+    // Choose range based on expected rotation rates:
+    
+    // For slow, precise rotations (e.g., stabilization)
+    sensor.setup_gyroscope(GyroRange::Range250Dps)?;
+    
+    // For moderate rotation rates (e.g., drone control)
+    sensor.setup_gyroscope(GyroRange::Range500Dps)?;
+    
+    // For fast rotations (e.g., sports analysis)
+    sensor.setup_gyroscope(GyroRange::Range1000Dps)?;
+    
+    // For very high rotation rates (e.g., spinning objects)
+    sensor.setup_gyroscope(GyroRange::Range2000Dps)?;
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="error-handling"><a class="header" href="#error-handling">Error Handling</a></h2>
+<h3 id="comprehensive-error-handling"><a class="header" href="#comprehensive-error-handling">Comprehensive Error Handling</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+use hayasen::mpu9250_hayasen;
+
+fn robust_sensor_operation() {
+    let i2c = setup_i2c();
+    
+    match mpu9250_hayasen::create_default(i2c, 0x68) {
+        Ok(mut sensor) =&gt; {
+            loop {
+                match mpu9250_hayasen::read_all(&amp;mut sensor) {
+                    Ok((temp, accel, gyro)) =&gt; {
+                        process_sensor_data(temp, accel, gyro);
+                    },
+                    Err(e) =&gt; {
+                        match e {
+                            Error::I2c(_) =&gt; {
+                                println!("I2C communication error, retrying...");
+                                delay_ms(100);
+                                continue;
+                            },
+                            Error::NotDetected =&gt; {
+                                println!("Sensor not detected, check wiring");
+                                break;
+                            },
+                            Error::InvalidData =&gt; {
+                                println!("Invalid data received, skipping reading");
+                                continue;
+                            },
+                            Error::ConfigError =&gt; {
+                                println!("Configuration error");
+                                break;
+                            },
+                            Error::SensorSpecific(msg) =&gt; {
+                                println!("Sensor-specific error: {}", msg);
+                                break;
+                            },
+                        }
+                    }
+                }
+                delay_ms(20);
+            }
+        },
+        Err(e) =&gt; {
+            println!("Failed to initialize sensor: {:?}", e);
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="error-classification"><a class="header" href="#error-classification">Error Classification</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn classify_errors(error: Error&lt;YourI2cError&gt;) {
+    if error.is_i2c_error() {
+        println!("Communication problem - check wiring and I2C bus");
+    } else if error.is_config_error() {
+        println!("Configuration issue - check sensor settings");
+    }
+    
+    // Extract underlying I2C error if needed
+    if let Some(i2c_err) = error.into_i2c_error() {
+        handle_i2c_specific_error(i2c_err);
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="platform-specific-examples"><a class="header" href="#platform-specific-examples">Platform-Specific Examples</a></h2>
+<h3 id="esp32-example-using-esp-hal"><a class="header" href="#esp32-example-using-esp-hal">ESP32 Example (using esp-hal)</a></h3>
+<pre><pre class="playground"><code class="language-rust">#![no_std]
+#![no_main]
+
+use esp_hal::{
+    clock::ClockControl,
+    i2c::I2C,
+    peripherals::Peripherals,
+    prelude::*,
+    delay::Delay,
+};
+use hayasen::prelude::*;
+use hayasen::mpu9250_hayasen;
+
+#[entry]
+fn main() -&gt; ! {
+    let peripherals = Peripherals::take();
+    let system = peripherals.SYSTEM.split();
+    let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
+    
+    // Setup I2C
+    let i2c = I2C::new(
+        peripherals.I2C0,
+        peripherals.GPIO21, // SDA
+        peripherals.GPIO22, // SCL
+        100u32.kHz(),
+        &amp;clocks,
+    );
+    
+    let mut delay = Delay::new(&amp;clocks);
+    
+    // Initialize MPU9250
+    let mut sensor = match mpu9250_hayasen::create_default(i2c, 0x68) {
+        Ok(s) =&gt; s,
+        Err(_) =&gt; {
+            println!("Failed to initialize MPU9250");
+            loop { delay.delay_ms(1000u32); }
+        }
+    };
+    
+    loop {
+        match mpu9250_hayasen::read_all(&amp;mut sensor) {
+            Ok((temp, accel, gyro)) =&gt; {
+                println!("T: {:.1}°C | A: [{:.2}, {:.2}, {:.2}]g | G: [{:.1}, {:.1}, {:.1}]°/s",
+                        temp, accel[0], accel[1], accel[2], gyro[0], gyro[1], gyro[2]);
+            },
+            Err(_) =&gt; println!("Read error"),
+        }
+        delay.delay_ms(100u32);
+    }
+}</code></pre></pre>
+<h3 id="stm32-example-using-stm32f4xx-hal"><a class="header" href="#stm32-example-using-stm32f4xx-hal">STM32 Example (using stm32f4xx-hal)</a></h3>
+<pre><pre class="playground"><code class="language-rust">#![no_std]
+#![no_main]
+
+use panic_halt as _;
+use cortex_m_rt::entry;
+use stm32f4xx_hal::{
+    pac,
+    prelude::*,
+    i2c::I2c,
+};
+use hayasen::prelude::*;
+
+#[entry]
+fn main() -&gt; ! {
+    let dp = pac::Peripherals::take().unwrap();
+    let cp = cortex_m::peripheral::Peripherals::take().unwrap();
+    
+    let rcc = dp.RCC.constrain();
+    let clocks = rcc.cfgr.freeze();
+    
+    let gpiob = dp.GPIOB.split();
+    let scl = gpiob.pb8.into_alternate_open_drain();
+    let sda = gpiob.pb9.into_alternate_open_drain();
+    
+    let i2c = I2c::new(dp.I2C1, (scl, sda), 400.kHz(), &amp;clocks);
+    
+    let mut delay = cortex_m::delay::Delay::new(cp.SYST, clocks.hclk().to_Hz());
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    
+    // Custom initialization
+    match sensor.initialize_sensor(AccelRange::Range4G, GyroRange::Range500Dps) {
+        Ok(_) =&gt; {},
+        Err(_) =&gt; loop { delay.delay_ms(1000u32); }
+    }
+    
+    loop {
+        if let Ok(accel) = sensor.read_acceleration() {
+            // Process acceleration data
+            process_motion_data(accel);
+        }
+        delay.delay_ms(50u32);
+    }
+}</code></pre></pre>
+<h2 id="advanced-use-cases"><a class="header" href="#advanced-use-cases">Advanced Use Cases</a></h2>
+<h3 id="calibration-and-offset-correction"><a class="header" href="#calibration-and-offset-correction">Calibration and Offset Correction</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn calibrate_sensor() -&gt; Result&lt;[f32; 6], Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    sensor.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
+    
+    println!("Keep sensor stationary for calibration...");
+    delay_ms(2000);
+    
+    let mut accel_offsets = [0.0f32; 3];
+    let mut gyro_offsets = [0.0f32; 3];
+    const SAMPLES: usize = 100;
+    
+    // Collect calibration samples
+    for _ in 0..SAMPLES {
+        let accel = sensor.read_acceleration()?;
+        let gyro = sensor.read_angular_velocity()?;
+        
+        accel_offsets[0] += accel[0];
+        accel_offsets[1] += accel[1];
+        accel_offsets[2] += accel[2] - 1.0; // Subtract expected 1g on Z-axis
+        
+        gyro_offsets[0] += gyro[0];
+        gyro_offsets[1] += gyro[1];
+        gyro_offsets[2] += gyro[2];
+        
+        delay_ms(10);
+    }
+    
+    // Calculate averages
+    for i in 0..3 {
+        accel_offsets[i] /= SAMPLES as f32;
+        gyro_offsets[i] /= SAMPLES as f32;
+    }
+    
+    println!("Calibration complete!");
+    println!("Accel offsets: [{:.4}, {:.4}, {:.4}]", accel_offsets[0], accel_offsets[1], accel_offsets[2]);
+    println!("Gyro offsets: [{:.4}, {:.4}, {:.4}]", gyro_offsets[0], gyro_offsets[1], gyro_offsets[2]);
+    
+    Ok([accel_offsets[0], accel_offsets[1], accel_offsets[2], 
+        gyro_offsets[0], gyro_offsets[1], gyro_offsets[2]])
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="orientation-estimation"><a class="header" href="#orientation-estimation">Orientation Estimation</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn estimate_orientation() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    sensor.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
+    
+    loop {
+        let accel = sensor.read_acceleration()?;
+        
+        // Calculate roll and pitch from accelerometer (when stationary)
+        let roll = accel[1].atan2(accel[2]) * 180.0 / core::f32::consts::PI;
+        let pitch = (-accel[0]).atan2((accel[1].powi(2) + accel[2].powi(2)).sqrt()) 
+                   * 180.0 / core::f32::consts::PI;
+        
+        println!("Roll: {:.2}°, Pitch: {:.2}°", roll, pitch);
+        
+        delay_ms(100);
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="multi-sensor-setup"><a class="header" href="#multi-sensor-setup">Multi-Sensor Setup</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn multiple_sensors_example() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    
+    // MPU9250 can have two possible I2C addresses
+    let mut sensor1 = Mpu9250::new(i2c, 0x68); // AD0 = LOW
+    let mut sensor2 = Mpu9250::new(i2c, 0x69); // AD0 = HIGH
+    
+    // Initialize both sensors
+    sensor1.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
+    sensor2.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
+    
+    loop {
+        let accel1 = sensor1.read_acceleration()?;
+        let accel2 = sensor2.read_acceleration()?;
+        
+        println!("Sensor 1: [{:.3}, {:.3}, {:.3}]g", accel1[0], accel1[1], accel1[2]);
+        println!("Sensor 2: [{:.3}, {:.3}, {:.3}]g", accel2[0], accel2[1], accel2[2]);
+        
+        delay_ms(100);
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
+<h3 id="initialization-checklist"><a class="header" href="#initialization-checklist">Initialization Checklist</a></h3>
+<ol>
+<li><strong>Always verify sensor identity</strong> before configuration</li>
+<li><strong>Configure power management</strong> early in initialization</li>
+<li><strong>Set appropriate ranges</strong> based on your application requirements</li>
+<li><strong>Configure sample rate</strong> to match your update frequency needs</li>
+<li><strong>Handle errors gracefully</strong> with appropriate retry logic</li>
+</ol>
+<h3 id="sample-rate-guidelines"><a class="header" href="#sample-rate-guidelines">Sample Rate Guidelines</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Sample rate formula: Sample Rate = 1000Hz / (1 + SMPRT_DIV)
+sensor.set_sample_rate(0)?;   // 1000 Hz - High frequency applications
+sensor.set_sample_rate(9)?;   // 100 Hz - General motion tracking
+sensor.set_sample_rate(19)?;  // 50 Hz - Low power applications
+sensor.set_sample_rate(99)?;  // 10 Hz - Very low power monitoring
+<span class="boring">}</span></code></pre></pre>
+<h3 id="memory-usage-optimization"><a class="header" href="#memory-usage-optimization">Memory Usage Optimization</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+// For memory-constrained systems, use raw readings when possible
+fn memory_efficient_reading() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    sensor.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
+    
+    // Read raw data to avoid floating-point operations
+    let raw_accel = sensor.read_accel_raw()?;
+    
+    // Manual scaling only when needed
+    const SCALE_2G: f32 = 2.0 / 32768.0;
+    let scaled_x = raw_accel[0] as f32 * SCALE_2G;
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="common-issues-and-solutions"><a class="header" href="#common-issues-and-solutions">Common Issues and Solutions</a></h3>
+<p><strong>Sensor Not Detected:</strong></p>
 <ul>
-<li><code>mpu9250</code> - Enables comprehensive support for the MPU9250 motion sensor. This includes functionalities
-for reading accelerometer, gyroscope, and magnetometer data, as well as configuration options for various
-operating modes. (Enabled by default)</li>
+<li>Check I2C wiring (SDA, SCL, VCC, GND)</li>
+<li>Verify I2C address (0x68 or 0x69 depending on AD0 pin)</li>
+<li>Ensure proper pull-up resistors on I2C lines</li>
 </ul>
-<h2 id="future-plans"><a class="header" href="#future-plans">Future Plans</a></h2>
-<h3 id="-roadmap"><a class="header" href="#-roadmap">🔮 Roadmap</a></h3>
-<h4 id="-short-term-goals-v020---v050"><a class="header" href="#-short-term-goals-v020---v050">🎯 Short-term Goals (v0.2.0 - v0.5.0)</a></h4>
+<p><strong>Inconsistent Readings:</strong></p>
 <ul>
-<li>
-<p><input disabled="" type="checkbox"/>
-<strong>Complete MPU9250 implementation and testing</strong></p>
+<li>Check power supply stability</li>
+<li>Verify sample rate configuration</li>
+<li>Consider using digital low-pass filter</li>
+<li>Ensure sensor is properly mounted</li>
+</ul>
+<p><strong>High Noise:</strong></p>
 <ul>
-<li><input disabled="" type="checkbox"/>
-Magnetometer support (AK8963)</li>
-<li><input disabled="" type="checkbox"/>
-Self-test functionality</li>
-<li><input disabled="" type="checkbox"/>
-Motion detection interrupts</li>
-<li><input disabled="" type="checkbox"/>
-FIFO buffer support</li>
-<li><input disabled="" type="checkbox"/>
-Comprehensive unit tests</li>
-<li><input disabled="" type="checkbox"/>
-Integration tests with hardware</li>
+<li>Lower the digital low-pass filter bandwidth</li>
+<li>Reduce sample rate if appropriate</li>
+<li>Check for electromagnetic interference</li>
+<li>Implement software filtering</li>
 </ul>
-</li>
-<li>
-<p><input disabled="" type="checkbox"/>
-<strong>Add comprehensive test suite</strong></p>
-<ul>
-<li><input disabled="" type="checkbox"/>
-Unit tests for all public APIs</li>
-<li><input disabled="" type="checkbox"/>
-Integration tests with mock I2C</li>
-<li><input disabled="" type="checkbox"/>
-Hardware-in-the-loop testing</li>
-<li><input disabled="" type="checkbox"/>
-Continuous integration setup</li>
-<li><input disabled="" type="checkbox"/>
-Code coverage reporting</li>
-</ul>
-</li>
-<li>
-<p><input disabled="" type="checkbox"/>
-<strong>Create more usage examples</strong></p>
-<ul>
-<li><input disabled="" type="checkbox"/>
-Basic sensor reading example</li>
-<li><input disabled="" type="checkbox"/>
-Interrupt-driven motion detection</li>
-<li><input disabled="" type="checkbox"/>
-Data logging application</li>
-<li><input disabled="" type="checkbox"/>
-Multi-sensor fusion example</li>
-<li><input disabled="" type="checkbox"/>
-RTOS integration examples</li>
-</ul>
-</li>
-</ul>
-<h4 id="-medium-term-goals-v060---v090"><a class="header" href="#-medium-term-goals-v060---v090">🚀 Medium-term Goals (v0.6.0 - v0.9.0)</a></h4>
-<ul>
-<li>
-<p><input disabled="" type="checkbox"/>
-<strong>Add MAX30102 heart rate sensor support</strong></p>
-<ul>
-<li><input disabled="" type="checkbox"/>
-Heart rate monitoring</li>
-<li><input disabled="" type="checkbox"/>
-Oxygen saturation (SpO2) measurement</li>
-<li><input disabled="" type="checkbox"/>
-FIFO data reading</li>
-<li><input disabled="" type="checkbox"/>
-Interrupt configuration</li>
-<li><input disabled="" type="checkbox"/>
-Temperature reading</li>
-</ul>
-</li>
-<li>
-<p><input disabled="" type="checkbox"/>
-<strong>Add CI/CD pipeline</strong></p>
-<ul>
-<li><input disabled="" type="checkbox"/>
-GitHub Actions for testing</li>
-<li><input disabled="" type="checkbox"/>
-Automated documentation deployment</li>
-<li><input disabled="" type="checkbox"/>
-Release automation</li>
-<li><input disabled="" type="checkbox"/>
-Crate publishing automation</li>
-<li><input disabled="" type="checkbox"/>
-Cross-compilation testing</li>
-</ul>
-</li>
-</ul>
-<h4 id="-long-term-goals-v100"><a class="header" href="#-long-term-goals-v100">🌟 Long-term Goals (v1.0.0+)</a></h4>
-<ul>
-<li>
-<p><input disabled="" type="checkbox"/>
-<strong>Support for more sensor types</strong></p>
-<ul>
-<li><input disabled="" type="checkbox"/>
-BME280 (Temperature, Humidity, Pressure)</li>
-<li><input disabled="" type="checkbox"/>
-BMP180/BMP280 (Pressure)</li>
-<li><input disabled="" type="checkbox"/>
-HMC5883L (Magnetometer)</li>
-<li><input disabled="" type="checkbox"/>
-ADXL345 (Accelerometer)</li>
-<li><input disabled="" type="checkbox"/>
-TMP36/TMP102 (Temperature)</li>
-</ul>
-</li>
-<li>
-<p><input disabled="" type="checkbox"/>
-<strong>Advanced features</strong></p>
-<ul>
-<li><input disabled="" type="checkbox"/>
-Sensor fusion algorithms</li>
-<li><input disabled="" type="checkbox"/>
-Power management utilities</li>
-<li><input disabled="" type="checkbox"/>
-Async/await support</li>
-<li><input disabled="" type="checkbox"/>
-No-alloc mode for tiny systems</li>
-<li><input disabled="" type="checkbox"/>
-WebAssembly support for simulation</li>
-</ul>
-</li>
-<li>
-<p><input disabled="" type="checkbox"/>
-<strong>Ecosystem integration</strong></p>
-<ul>
-<li><input disabled="" type="checkbox"/>
-Embassy framework support</li>
-<li><input disabled="" type="checkbox"/>
-RTIC framework integration</li>
-<li><input disabled="" type="checkbox"/>
-defmt logging support</li>
-<li><input disabled="" type="checkbox"/>
-Probe-rs debugging support</li>
-<li><input disabled="" type="checkbox"/>
-Platform-agnostic drivers</li>
-</ul>
-</li>
-</ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="project-structure"><a class="header" href="#project-structure">Project Structure</a></h1>
-<p>This document outlines the high-level directory and file structure of the <code>hayasen</code> project, providing an
-overview of where different components reside.</p>
+<h3 id="debug-helper-functions"><a class="header" href="#debug-helper-functions">Debug Helper Functions</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn debug_sensor_status(sensor: &amp;mut Mpu9250&lt;impl I2c&gt;) -&gt; Result&lt;(), Error&lt;impl std::fmt::Debug&gt;&gt; {
+    // Verify sensor is responding
+    match sensor.verify_identity() {
+        Ok(_) =&gt; println!("✓ Sensor identity verified"),
+        Err(e) =&gt; println!("✗ Identity check failed: {:?}", e),
+    }
+    
+    // Test basic readings
+    match sensor.read_temp_raw() {
+        Ok(temp) =&gt; println!("✓ Raw temperature reading: {}", temp),
+        Err(e) =&gt; println!("✗ Temperature read failed: {:?}", e),
+    }
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<p>This documentation provides comprehensive examples for using the MPU9250 library across different scenarios
+and platforms. The examples progress from simple usage to advanced applications, helping developers implement
+motion sensing in their embedded projects effectively.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="development-notes---hayasen-crate"><a class="header" href="#development-notes---hayasen-crate">Development Notes - Hayasen Crate</a></h1>
+<h2 id="crate-structure"><a class="header" href="#crate-structure">Crate Structure</a></h2>
+<h3 id="module-organization"><a class="header" href="#module-organization">Module Organization</a></h3>
+<p>The crate follows a modular design pattern optimized for embedded systems:</p>
 <pre><code>hayasen/
 ├── src/
-│   ├── lib.rs          # Main library entry point, exposing the public API and core functionalities.
-│   ├── error.rs        # Defines a unified set of error types for consistent error handling across the library.
-│   ├── functions.rs    # Implements the function registry system, allowing dynamic management and execution of sensor-related operations.
-│   └── mpu9250.rs      # Contains the implementation for interacting with the MPU9250 inertial measurement unit (IMU) sensor.
-├── examples/           # Contains example code demonstrating how to use the `hayasen` library's features.
-└── tests/              # Houses integration and unit tests to ensure the correctness and reliability of the library.
+│   ├── lib.rs          # Main library entry point
+│   ├── error.rs        # Unified error types
+│   ├── functions.rs    # Function registry system
+│   └── mpu9250.rs      # MPU9250 sensor implementation
+├── examples/           # Usage examples
+└── tests/              # Integration tests
 </code></pre>
+<h3 id="key-architectural-decisions"><a class="header" href="#key-architectural-decisions">Key Architectural Decisions</a></h3>
+<h4 id="1-feature-gated-compilation"><a class="header" href="#1-feature-gated-compilation">1. Feature-Gated Compilation</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// lib.rs
+#[cfg(feature = "mpu9250")]
+pub mod mpu9250;
+
+#[cfg(feature = "mpu9250")]
+pub use crate::mpu9250::*;
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Rationale:</strong> The crate uses conditional compilation to include only the sensors you need, reducing binary size and compilation time. This is crucial for resource-constrained embedded systems.</p>
+<p><strong>Usage:</strong></p>
+<pre><code class="language-toml">[dependencies]
+hayasen = { version = "x.x.x", features = ["mpu9250"] }
+</code></pre>
+<h4 id="2-prelude-pattern"><a class="header" href="#2-prelude-pattern">2. Prelude Pattern</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod prelude {
+    pub use crate::error::Error;
+    #[cfg(feature = "mpu9250")]
+    pub use crate::mpu9250::*;
+    pub use embedded_hal::i2c::I2c;
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Purpose:</strong> Provides a convenient way to import commonly used types and traits. Users can simply <code>use hayasen::prelude::*;</code> to get everything they need.</p>
+<h4 id="3-convenience-layer-mpu9250_hayasen"><a class="header" href="#3-convenience-layer-mpu9250_hayasen">3. Convenience Layer (<code>mpu9250_hayasen</code>)</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod mpu9250_hayasen {
+    // Simplified API for common operations
+    pub fn create_default&lt;I2C, E&gt;(i2c: I2C, address: u8) -&gt; Result&lt;mpu9250::Mpu9250&lt;I2C&gt;, Error&lt;E&gt;&gt;
+    pub fn read_all&lt;I2C, E&gt;(sensor: &amp;mut mpu9250::Mpu9250&lt;I2C&gt;) -&gt; Result&lt;(f32, [f32; 3], [f32; 3]), Error&lt;E&gt;&gt;
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Reduces boilerplate for common operations</li>
+<li>Provides sensible defaults for new users</li>
+<li>Maintains access to low-level API for advanced users</li>
+</ul>
+<h3 id="driver-architecture"><a class="header" href="#driver-architecture">Driver Architecture</a></h3>
+<h4 id="core-driver-structure"><a class="header" href="#core-driver-structure">Core Driver Structure</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct Mpu9250&lt;I2C&gt; {
+    i2c: I2C,           // Owned I2C peripheral
+    address: u8,        // Device I2C address
+    accel_scale: f32,   // Cached scaling factor for acceleration
+    gyro_scale: f32,    // Cached scaling factor for angular velocity
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Design Principles:</strong></p>
+<ul>
+<li><strong>Ownership Model:</strong> The driver takes ownership of the I2C peripheral to prevent conflicts</li>
+<li><strong>Zero-Cost Abstractions:</strong> Scale factors are pre-calculated and cached to avoid runtime divisions</li>
+<li><strong>Type Safety:</strong> Generic over I2C type for platform independence</li>
+</ul>
+<h4 id="state-management"><a class="header" href="#state-management">State Management</a></h4>
+<p>The driver maintains minimal state to reduce memory footprint:</p>
+<ul>
+<li>Scale factors are calculated once during configuration</li>
+<li>No internal buffering or filtering (left to user applications)</li>
+<li>Stateless register operations for maximum flexibility</li>
+</ul>
+<h2 id="no_std-compatibility"><a class="header" href="#no_std-compatibility"><code>no_std</code> Compatibility</a></h2>
+<h3 id="core-requirements"><a class="header" href="#core-requirements">Core Requirements</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>#![no_std]
+#![no_main]  // For applications, not the library itself
+<span class="boring">fn main() {
+</span><span class="boring">}</span></code></pre></pre>
+<h3 id="memory-management"><a class="header" href="#memory-management">Memory Management</a></h3>
+<h4 id="no-dynamic-allocation"><a class="header" href="#no-dynamic-allocation">No Dynamic Allocation</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// ✓ Stack-allocated arrays
+let mut buffer = [0u8; 6];
+
+// ✗ Avoid heap allocation
+// let mut buffer = vec![0u8; 6];  // This would require std
+<span class="boring">}</span></code></pre></pre>
+<h4 id="fixed-size-buffers"><a class="header" href="#fixed-size-buffers">Fixed-Size Buffers</a></h4>
+<p>All I2C operations use compile-time sized buffers:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn read_accel_raw(&amp;mut self) -&gt; Result&lt;[i16; 3], Error&lt;E&gt;&gt; {
+    let mut buffer = [0u8; 6];  // Fixed size, stack allocated
+    // ...
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="core-library-dependencies"><a class="header" href="#core-library-dependencies">Core Library Dependencies</a></h3>
+<p>The crate only depends on <code>core</code> and <code>embedded-hal</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use core::fmt::{Debug, Formatter, Result};  // ✓ Core library
+use embedded_hal::i2c::I2c;                  // ✓ Hardware abstraction
+
+// ✗ Avoid std dependencies
+// use std::vec::Vec;
+// use std::collections::HashMap;
+<span class="boring">}</span></code></pre></pre>
+<h3 id="floating-point-considerations"><a class="header" href="#floating-point-considerations">Floating Point Considerations</a></h3>
+<h4 id="target-compatibility"><a class="header" href="#target-compatibility">Target Compatibility</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// The crate uses f32 for sensor data conversion
+let temperature = (raw as f32) / 340.0 + 36.53;
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Uses <code>f32</code> for better performance on 32-bit ARM Cortex-M</li>
+<li>All calculations are optimized for embedded floating-point units</li>
+<li>For targets without FPU, consider using fixed-point arithmetic wrapper</li>
+</ul>
+<h4 id="alternative-for-no-fpu-targets"><a class="header" href="#alternative-for-no-fpu-targets">Alternative for No-FPU Targets</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Example fixed-point implementation (not included in crate)
+pub fn read_acceleration_fixed(&amp;mut self) -&gt; Result&lt;[i32; 3], Error&lt;E&gt;&gt; {
+    let raw = self.read_accel_raw()?;
+    // Scale to milligee (1/1000 g) using integer math
+    let scale_factor = (self.accel_scale * 1000.0) as i32;
+    Ok([
+        (raw[0] as i32 * scale_factor) / 1000,
+        (raw[1] as i32 * scale_factor) / 1000,
+        (raw[2] as i32 * scale_factor) / 1000,
+    ])
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="const-generics-and-compile-time-optimization"><a class="header" href="#const-generics-and-compile-time-optimization">Const Generics and Compile-Time Optimization</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Register addresses are compile-time constants
+const WHO_AM_I: u8 = 0x75;
+const ACCEL_XOUT_H: u8 = 0x3B;
+
+// Enums are zero-cost abstractions
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum AccelRange {
+    Range2G,    // Compiles to simple integer values
+    Range4G,
+    Range8G,
+    Range16G,
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="safety-considerations"><a class="header" href="#safety-considerations">Safety Considerations</a></h2>
+<h3 id="i2c-communication-safety"><a class="header" href="#i2c-communication-safety">I2C Communication Safety</a></h3>
+<h4 id="transaction-atomicity"><a class="header" href="#transaction-atomicity">Transaction Atomicity</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn read_accel_raw(&amp;mut self) -&gt; Result&lt;[i16; 3], Error&lt;E&gt;&gt; {
+    let mut buffer = [0u8; 6];
+    self.i2c.write(self.address, &amp;[ACCEL_XOUT_H])?;  // Register pointer
+    self.i2c.read(self.address, &amp;mut buffer)?;       // Read data
+    // ... process buffer
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Critical Points:</strong></p>
+<ul>
+<li><strong>Atomic Operations:</strong> Each register read is a complete write-then-read transaction</li>
+<li><strong>Error Propagation:</strong> I2C errors are immediately propagated using <code>?</code> operator</li>
+<li><strong>Buffer Safety:</strong> Fixed-size buffers prevent overflow issues</li>
+</ul>
+<h4 id="address-validation"><a class="header" href="#address-validation">Address Validation</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn verify_identity(&amp;mut self) -&gt; Result&lt;(), Error&lt;E&gt;&gt; {
+    let mut buffer = [0u8];
+    self.i2c.write(self.address, &amp;[WHO_AM_I])?;
+    self.i2c.read(self.address, &amp;mut buffer)?;
+    if buffer[0] != WHO_AM_I_VALUE {
+        return Err(Error::NotDetected);  // Explicit validation
+    }
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Safety Features:</strong></p>
+<ul>
+<li><strong>Device Verification:</strong> Always check WHO_AM_I register before operation</li>
+<li><strong>Type Safety:</strong> Rust's type system prevents incorrect address usage</li>
+<li><strong>Explicit Error States:</strong> Clear error types for different failure modes</li>
+</ul>
+<h3 id="memory-safety"><a class="header" href="#memory-safety">Memory Safety</a></h3>
+<h4 id="buffer-bounds-checking"><a class="header" href="#buffer-bounds-checking">Buffer Bounds Checking</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Safe array access - Rust prevents buffer overruns at compile time
+let x = ((buffer[0] as i16) &lt;&lt; 8) | buffer[1] as i16;  // Safe indexing
+let y = ((buffer[2] as i16) &lt;&lt; 8) | buffer[3] as i16;  // Bounds checked
+let z = ((buffer[4] as i16) &lt;&lt; 8) | buffer[5] as i16;  // Compile-time verified
+<span class="boring">}</span></code></pre></pre>
+<h4 id="integer-overflow-protection"><a class="header" href="#integer-overflow-protection">Integer Overflow Protection</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Safe conversion with explicit casting
+let x = raw[0] as f32 * self.accel_scale;  // Explicit type conversion
+
+// For temperature calculation, use checked arithmetic in critical applications
+pub fn read_temperature_celsius_safe(&amp;mut self) -&gt; Result&lt;f32, Error&lt;E&gt;&gt; {
+    let raw = self.read_temp_raw()?;
+    let temp_f64 = (raw as f64) / 340.0 + 36.53;  // Higher precision intermediate
+    Ok(temp_f64 as f32)
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="register-access-safety"><a class="header" href="#register-access-safety">Register Access Safety</a></h3>
+<h4 id="read-modify-write-operations"><a class="header" href="#read-modify-write-operations">Read-Modify-Write Operations</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn wake_up(&amp;mut self) -&gt; Result&lt;(), Error&lt;E&gt;&gt; {
+    let mut buffer = [0u8];
+    self.i2c.write(self.address, &amp;[PWR_MGMT_1])?;     // Read current value
+    self.i2c.read(self.address, &amp;mut buffer)?;
+    let new_config = buffer[0] &amp; 0xBF;                // Clear sleep bit safely
+    self.i2c.write(self.address, &amp;[PWR_MGMT_1, new_config])?;  // Write back
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Safety Measures:</strong></p>
+<ul>
+<li><strong>Atomic RMW:</strong> Complete read-modify-write sequence</li>
+<li><strong>Bit Masking:</strong> Safe bit manipulation using explicit masks</li>
+<li><strong>State Preservation:</strong> Only modify intended bits, preserve others</li>
+</ul>
+<h3 id="error-handling-strategy"><a class="header" href="#error-handling-strategy">Error Handling Strategy</a></h3>
+<h4 id="comprehensive-error-types"><a class="header" href="#comprehensive-error-types">Comprehensive Error Types</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Clone, PartialEq, Eq)]
+pub enum Error&lt;E&gt; {
+    I2c(E),                    // Underlying I2C errors
+    InvalidData,               // Data validation failures
+    NotDetected,              // Device not found/responding
+    ConfigError,              // Configuration parameter errors
+    SensorSpecific(&amp;'static str), // Sensor-specific error messages
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="error-recovery-patterns"><a class="header" href="#error-recovery-patterns">Error Recovery Patterns</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Recommended error handling pattern
+fn safe_sensor_operation() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let mut retry_count = 0;
+    const MAX_RETRIES: u8 = 3;
+    
+    loop {
+        match sensor.read_acceleration() {
+            Ok(data) =&gt; return Ok(process_data(data)),
+            Err(Error::I2c(_)) if retry_count &lt; MAX_RETRIES =&gt; {
+                retry_count += 1;
+                delay_ms(10);  // Brief delay before retry
+                continue;
+            },
+            Err(e) =&gt; return Err(e),  // Propagate non-recoverable errors
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="concurrency-safety"><a class="header" href="#concurrency-safety">Concurrency Safety</a></h3>
+<h4 id="single-threaded-design"><a class="header" href="#single-threaded-design">Single-Threaded Design</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// The driver requires &amp;mut self for all operations
+impl&lt;I2C, E&gt; Mpu9250&lt;I2C&gt; where I2C: I2c&lt;Error = E&gt; {
+    pub fn read_acceleration(&amp;mut self) -&gt; Result&lt;[f32; 3], Error&lt;E&gt;&gt;
+    //                        ^^^^ Exclusive access required
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Implications:</strong></p>
+<ul>
+<li><strong>Thread Safety:</strong> Not <code>Send</code> or <code>Sync</code> by default - I2C peripherals are typically not thread-safe</li>
+<li><strong>Exclusive Access:</strong> Prevents concurrent access to I2C bus</li>
+<li><strong>RAII Pattern:</strong> Resource cleanup handled by Rust's ownership system</li>
+</ul>
+<h4 id="interrupt-safety"><a class="header" href="#interrupt-safety">Interrupt Safety</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// For interrupt-driven applications
+fn interrupt_safe_reading() {
+    // Disable interrupts during I2C transaction if required by your platform
+    critical_section::with(|_cs| {
+        let result = sensor.read_acceleration();
+        // Process result...
+    });
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="performance-considerations"><a class="header" href="#performance-considerations">Performance Considerations</a></h3>
+<h4 id="zero-copy-design"><a class="header" href="#zero-copy-design">Zero-Copy Design</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Direct array return - no heap allocation
+pub fn read_accel_raw(&amp;mut self) -&gt; Result&lt;[i16; 3], Error&lt;E&gt;&gt; {
+    // Returns stack-allocated array directly
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="minimal-register-access"><a class="header" href="#minimal-register-access">Minimal Register Access</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Efficient register reading - single transaction for multiple axes
+let mut buffer = [0u8; 6];  // Read all 6 bytes (3 axes × 2 bytes) at once
+self.i2c.write(self.address, &amp;[ACCEL_XOUT_H])?;
+self.i2c.read(self.address, &amp;mut buffer)?;
+<span class="boring">}</span></code></pre></pre>
+<h3 id="development-workflow"><a class="header" href="#development-workflow">Development Workflow</a></h3>
+<h4 id="testing-strategy"><a class="header" href="#testing-strategy">Testing Strategy</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    // Mock I2C for unit testing
+    struct MockI2c {
+        expected_writes: Vec&lt;Vec&lt;u8&gt;&gt;,
+        read_responses: Vec&lt;Vec&lt;u8&gt;&gt;,
+    }
+    
+    impl I2c for MockI2c {
+        type Error = ();
+        
+        fn write(&amp;mut self, _addr: u8, data: &amp;[u8]) -&gt; Result&lt;(), Self::Error&gt; {
+            // Verify expected write operations
+            Ok(())
+        }
+        
+        fn read(&amp;mut self, _addr: u8, buffer: &amp;mut [u8]) -&gt; Result&lt;(), Self::Error&gt; {
+            // Return mock data
+            Ok(())
+        }
+    }
+    
+    #[test]
+    fn test_sensor_initialization() {
+        let mock_i2c = MockI2c::new();
+        let mut sensor = Mpu9250::new(mock_i2c, 0x68);
+        // Test initialization logic...
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="documentation-guidelines"><a class="header" href="#documentation-guidelines">Documentation Guidelines</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// Reads accelerometer data in g-force units
+/// 
+/// # Returns
+/// 
+/// Array of [X, Y, Z] acceleration values in g-force units.
+/// The scaling is automatically applied based on the configured range.
+/// 
+/// # Errors
+/// 
+/// Returns `Error::I2c` if communication fails.
+/// 
+/// # Example
+/// 
+/// ```no_run
+/// use hayasen::prelude::*;
+/// 
+/// let mut sensor = Mpu9250::new(i2c, 0x68);
+/// sensor.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
+/// let accel = sensor.read_acceleration()?;
+/// println!("Acceleration: {:?}", accel);
+/// ```
+pub fn read_acceleration(&amp;mut self) -&gt; Result&lt;[f32; 3], Error&lt;E&gt;&gt;
+<span class="boring">}</span></code></pre></pre>
+<h3 id="platform-integration-notes"><a class="header" href="#platform-integration-notes">Platform Integration Notes</a></h3>
+<h4 id="embedded-hal-compatibility"><a class="header" href="#embedded-hal-compatibility">Embedded HAL Compatibility</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Generic over any I2C implementation
+impl&lt;I2C, E&gt; Mpu9250&lt;I2C&gt;
+where 
+    I2C: I2c&lt;Error = E&gt;  // Uses embedded-hal trait
+{
+    // Platform-agnostic implementation
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li><strong>Platform Independence:</strong> Works with any embedded-hal compliant I2C driver</li>
+<li><strong>Type Safety:</strong> Compile-time verification of I2C compatibility</li>
+<li><strong>Error Propagation:</strong> Preserves underlying platform error types</li>
+</ul>
+<h4 id="memory-layout-considerations"><a class="header" href="#memory-layout-considerations">Memory Layout Considerations</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[repr(C)]
+struct SensorData {
+    temperature: f32,    // 4 bytes
+    accel: [f32; 3],    // 12 bytes
+    gyro: [f32; 3],     // 12 bytes
+}  // Total: 28 bytes - predictable layout
+<span class="boring">}</span></code></pre></pre>
+<h3 id="safety-patterns"><a class="header" href="#safety-patterns">Safety Patterns</a></h3>
+<h4 id="resource-management"><a class="header" href="#resource-management">Resource Management</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// RAII pattern ensures I2C is properly released
+impl&lt;I2C&gt; Drop for Mpu9250&lt;I2C&gt; {
+    fn drop(&amp;mut self) {
+        // I2C peripheral is automatically returned when Mpu9250 is dropped
+        // No explicit cleanup required due to Rust's ownership system
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="initialization-safety"><a class="header" href="#initialization-safety">Initialization Safety</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn initialize_sensor(&amp;mut self, accel_range: AccelRange, gyro_range: GyroRange) -&gt; Result&lt;(), Error&lt;E&gt;&gt; {
+    self.verify_identity()?;        // Always verify device first
+    self.configure_power()?;        // Ensure proper power state
+    self.setup_accelerometer(accel_range)?;  // Configure before use
+    self.setup_gyroscope(gyro_range)?;       // Configure before use
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Safety Chain:</strong></p>
+<ol>
+<li>Device identity verification prevents wrong device communication</li>
+<li>Power configuration ensures device is ready</li>
+<li>Sensor configuration sets known state before operation</li>
+</ol>
+<h4 id="register-access-patterns"><a class="header" href="#register-access-patterns">Register Access Patterns</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Safe register write pattern
+fn write_register(&amp;mut self, register: u8, value: u8) -&gt; Result&lt;(), Error&lt;E&gt;&gt; {
+    // Always write register address followed by data
+    self.i2c.write(self.address, &amp;[register, value])?;
+    Ok(())
+}
+
+// Safe register read pattern  
+fn read_register(&amp;mut self, register: u8) -&gt; Result&lt;u8, Error&lt;E&gt;&gt; {
+    let mut buffer = [0u8; 1];
+    self.i2c.write(self.address, &amp;[register])?;      // Set register pointer
+    self.i2c.read(self.address, &amp;mut buffer)?;       // Read data
+    Ok(buffer[0])
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="error-safety-guarantees"><a class="header" href="#error-safety-guarantees">Error Safety Guarantees</a></h3>
+<h4 id="fail-fast-design"><a class="header" href="#fail-fast-design">Fail-Fast Design</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Sensor operations fail immediately on error
+pub fn read_acceleration(&amp;mut self) -&gt; Result&lt;[f32; 3], Error&lt;E&gt;&gt; {
+    let raw = self.read_accel_raw()?;  // Fail fast on I2C error
+    // Only proceed if raw read succeeded
+    let x = raw[0] as f32 * self.accel_scale;
+    // ...
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="error-propagation-chain"><a class="header" href="#error-propagation-chain">Error Propagation Chain</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Error chain: I2C Error -&gt; Driver Error -&gt; Application Error
+Hardware I2C Error
+    ↓ (From&lt;E&gt; implementation)
+Driver Error&lt;E&gt;
+    ↓ (? operator)  
+Application Error Handling
+<span class="boring">}</span></code></pre></pre>
+<h3 id="integration-patterns"><a class="header" href="#integration-patterns">Integration Patterns</a></h3>
+<h4 id="dependency-injection"><a class="header" href="#dependency-injection">Dependency Injection</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// The driver doesn't create its own I2C - it's injected
+let i2c = platform_specific_i2c_setup();
+let sensor = Mpu9250::new(i2c, address);  // Dependency injection
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Testability with mock I2C implementations</li>
+<li>Platform flexibility</li>
+<li>Resource sharing control</li>
+</ul>
+<h4 id="builder-pattern-extension"><a class="header" href="#builder-pattern-extension">Builder Pattern Extension</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Example extension for complex configurations
+impl&lt;I2C, E&gt; Mpu9250&lt;I2C&gt; 
+where I2C: I2c&lt;Error = E&gt;
+{
+    pub fn builder(i2c: I2C, address: u8) -&gt; SensorBuilder&lt;I2C&gt; {
+        SensorBuilder::new(i2c, address)
+    }
+}
+
+pub struct SensorBuilder&lt;I2C&gt; {
+    sensor: Mpu9250&lt;I2C&gt;,
+    configured: bool,
+}
+
+impl&lt;I2C, E&gt; SensorBuilder&lt;I2C&gt; 
+where I2C: I2c&lt;Error = E&gt;
+{
+    pub fn with_accel_range(mut self, range: AccelRange) -&gt; Result&lt;Self, Error&lt;E&gt;&gt; {
+        self.sensor.setup_accelerometer(range)?;
+        Ok(self)
+    }
+    
+    pub fn build(self) -&gt; Result&lt;Mpu9250&lt;I2C&gt;, Error&lt;E&gt;&gt; {
+        if !self.configured {
+            return Err(Error::ConfigError);
+        }
+        Ok(self.sensor)
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="debugging-and-development"><a class="header" href="#debugging-and-development">Debugging and Development</a></h3>
+<h4 id="register-debug-utilities"><a class="header" href="#register-debug-utilities">Register Debug Utilities</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[cfg(debug_assertions)]
+impl&lt;I2C, E&gt; Mpu9250&lt;I2C&gt;
+where I2C: I2c&lt;Error = E&gt;
+{
+    pub fn dump_registers(&amp;mut self) -&gt; Result&lt;(), Error&lt;E&gt;&gt; {
+        let registers = [WHO_AM_I, PWR_MGMT_1, ACCEL_CONFIG, GYRO_CONFIG];
+        
+        for &amp;reg in &amp;registers {
+            match self.read_register(reg) {
+                Ok(value) =&gt; println!("Register 0x{:02X}: 0x{:02X}", reg, value),
+                Err(e) =&gt; println!("Failed to read register 0x{:02X}: {:?}", reg, e),
+            }
+        }
+        Ok(())
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="compile-time-configuration-validation"><a class="header" href="#compile-time-configuration-validation">Compile-Time Configuration Validation</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Use const assertions for compile-time validation
+const _: () = {
+    assert!(WHO_AM_I_VALUE == 0x71, "Incorrect WHO_AM_I value for MPU9250");
+};
+<span class="boring">}</span></code></pre></pre>
+<h3 id="performance-optimization-notes"><a class="header" href="#performance-optimization-notes">Performance Optimization Notes</a></h3>
+<h4 id="batch-operations"><a class="header" href="#batch-operations">Batch Operations</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Reading all axes in single I2C transaction is more efficient
+pub fn read_accel_raw(&amp;mut self) -&gt; Result&lt;[i16; 3], Error&lt;E&gt;&gt; {
+    let mut buffer = [0u8; 6];  // Read all 3 axes at once
+    // More efficient than 3 separate 2-byte reads
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="cache-friendly-access-patterns"><a class="header" href="#cache-friendly-access-patterns">Cache-Friendly Access Patterns</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Scale factors are cached to avoid repeated calculations
+impl&lt;I2C, E&gt; Mpu9250&lt;I2C&gt; {
+    pub fn setup_accelerometer(&amp;mut self, range: AccelRange) -&gt; Result&lt;(), Error&lt;E&gt;&gt; {
+        let (config_value, scale) = match range {
+            AccelRange::Range2G =&gt; (0x00, 2.0 / 32768.0),  // Pre-calculated
+            // ...
+        };
+        self.accel_scale = scale;  // Cache for future use
+        Ok(())
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="future-development-considerations"><a class="header" href="#future-development-considerations">Future Development Considerations</a></h3>
+<h4 id="extensibility"><a class="header" href="#extensibility">Extensibility</a></h4>
+<ul>
+<li><strong>Modular Design:</strong> Easy to add new sensor support via feature flags</li>
+<li><strong>Trait Abstractions:</strong> Common sensor operations could be abstracted into traits</li>
+<li><strong>Async Support:</strong> Could be extended for async I2C operations</li>
+</ul>
+<h4 id="version-compatibility"><a class="header" href="#version-compatibility">Version Compatibility</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Use semantic versioning for breaking changes
+// Major: Breaking API changes
+// Minor: New features, backwards compatible  
+// Patch: Bug fixes only
+<span class="boring">}</span></code></pre></pre>
+<p>The crate is designed with embedded systems' constraints in mind, prioritizing safety, performance, and resource efficiency while maintaining a clean, intuitive API.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="contributing-to-hayasen"><a class="header" href="#contributing-to-hayasen">Contributing to Hayasen</a></h1>
 <p>Contributions are welcome for the <code>hayasen</code> project! To ensure a smooth and effective collaboration, please follow these guidelines.</p>
 <h2 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h2>
@@ -417,7 +1574,7 @@ git checkout -b bugfix/your-bug-name    # For bug fixes
 <li><strong>Types:</strong> Use explicit types where clarity is enhanced, otherwise let type inference work.</li>
 <li><strong>Comments:</strong> Explain <em>why</em> complex logic is implemented, not <em>what</em> it does.</li>
 </ul>
-<h2 id="development-workflow"><a class="header" href="#development-workflow">Development Workflow</a></h2>
+<h2 id="development-workflow-1"><a class="header" href="#development-workflow-1">Development Workflow</a></h2>
 <h3 id="building-the-project"><a class="header" href="#building-the-project">Building the Project</a></h3>
 <ul>
 <li><strong>Build:</strong> <code>cargo build</code></li>
@@ -450,6 +1607,346 @@ git checkout -b bugfix/your-bug-name    # For bug fixes
 </li>
 </ol>
 <p>Thank you for contributing to Hayasen!</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="license-information"><a class="header" href="#license-information">License Information</a></h1>
+<h2 id="dual-licensing"><a class="header" href="#dual-licensing">Dual Licensing</a></h2>
+<p>Hayasen is dual-licensed under the MIT License and Apache License 2.0. You may choose to use, modify, and distribute this software under the terms of either license.</p>
+<h3 id="why-dual-licensing"><a class="header" href="#why-dual-licensing">Why Dual Licensing?</a></h3>
+<p>The dual licensing approach provides maximum flexibility for different use cases:</p>
+<ul>
+<li><strong>MIT License</strong>: Simple, permissive license ideal for proprietary applications and commercial use</li>
+<li><strong>Apache License 2.0</strong>: More comprehensive license with explicit patent grants and trademark protections</li>
+</ul>
+<p>You can choose the license that best fits your project's requirements.</p>
+<h2 id="license-texts"><a class="header" href="#license-texts">License Texts</a></h2>
+<h3 id="mit-license"><a class="header" href="#mit-license">MIT License</a></h3>
+<pre><code>MIT License
+
+Copyright (c) [YEAR] [COPYRIGHT_HOLDER]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+</code></pre>
+<h3 id="apache-license-20"><a class="header" href="#apache-license-20">Apache License 2.0</a></h3>
+<pre><code>Apache License
+Version 2.0, January 2004
+http://www.apache.org/licenses/
+
+TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+1. Definitions.
+
+   "License" shall mean the terms and conditions for use, reproduction,
+   and distribution as defined by Sections 1 through 9 of this document.
+
+   "Licensor" shall mean the copyright owner or entity granting the License.
+
+   "Legal Entity" shall mean the union of the acting entity and all
+   other entities that control, are controlled by, or are under common
+   control with that entity. For the purposes of this definition,
+   "control" means (i) the power, direct or indirect, to cause the
+   direction or management of such entity, whether by contract or
+   otherwise, or (ii) ownership of fifty percent (50%) or more of the
+   outstanding shares, or (iii) beneficial ownership of such entity.
+
+   "You" (or "Your") shall mean an individual or Legal Entity
+   exercising permissions granted by this License.
+
+   "Source" form shall mean the preferred form for making modifications,
+   including but not limited to software source code, documentation
+   source, and configuration files.
+
+   "Object" form shall mean any form resulting from mechanical
+   transformation or translation of a Source form, including but
+   not limited to compiled object code, generated documentation,
+   and conversions to other media types.
+
+   "Work" shall mean the work of authorship, whether in Source or
+   Object form, made available under the License, as indicated by a
+   copyright notice that is included in or attached to the work
+   (which shall not include communications that are clearly marked or
+   otherwise designated in writing by the copyright owner as "Not a Contribution").
+
+   "Derivative Works" shall mean any work, whether in Source or Object
+   form, that is based upon (or derived from) the Work and for which the
+   editorial revisions, annotations, elaborations, or other modifications
+   represent, as a whole, an original work of authorship. For the purposes
+   of this License, Derivative Works shall not include works that remain
+   separable from, or merely link (or bind by name) to the interfaces of,
+   the Work and derivative works thereof.
+
+   "Contribution" shall mean any work of authorship, including
+   the original version of the Work and any modifications or additions
+   to that Work or Derivative Works thereof, that is intentionally
+   submitted to Licensor for inclusion in the Work by the copyright
+   owner or by an individual or Legal Entity authorized to submit on
+   behalf of the copyright owner. For the purposes of this definition,
+   "submitted" means any form of electronic, verbal, or written
+   communication sent to the Licensor or its representatives, including
+   but not limited to communication on electronic mailing lists, source
+   code control systems, and issue tracking systems that are managed by,
+   or on behalf of, the Licensor for the purpose of discussing and
+   improving the Work, but excluding communication that is conspicuously
+   marked or otherwise designated in writing by the copyright owner as
+   "Not a Contribution."
+
+2. Grant of Copyright License. Subject to the terms and conditions of
+   this License, each Contributor hereby grants to You a perpetual,
+   worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+   copyright license to use, reproduce, modify, publicly display,
+   publicly perform, sublicense, and distribute the Work and such Derivative
+   Works in Source or Object form.
+
+3. Grant of Patent License. Subject to the terms and conditions of
+   this License, each Contributor hereby grants to You a perpetual,
+   worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+   (except as stated in this section) patent license to make, have made,
+   use, offer to sell, sell, import, and otherwise transfer the Work,
+   where such license applies only to those patent claims licensable
+   by such Contributor that are necessarily infringed by their
+   Contribution(s) alone or by combination of their Contribution(s)
+   with the Work to which such Contribution(s) was submitted. If You
+   institute patent litigation against any entity (including a
+   cross-claim or counterclaim in a lawsuit) alleging that the Work
+   or a Contribution incorporated within the Work constitutes direct
+   or contributory patent infringement, then any patent licenses
+   granted to You under this License for that Work shall terminate
+   as of the date such litigation is filed.
+
+4. Redistribution. You may reproduce and distribute copies of the
+   Work or Derivative Works thereof in any medium, with or without
+   modifications, and in Source or Object form, provided that You
+   meet the following conditions:
+
+   (a) You must give any other recipients of the Work or
+       Derivative Works a copy of this License; and
+
+   (b) You must cause any modified files to carry prominent notices
+       stating that You changed the files; and
+
+   (c) You must retain, in the Source form of any Derivative Works
+       that You distribute, all copyright, trademark, patent,
+       attribution notices from the Source form of the Work,
+       excluding those notices that do not pertain to any part of
+       the Derivative Works; and
+
+   (d) If the Work includes a "NOTICE" text file as part of its
+       distribution, then any Derivative Works that You distribute must
+       include a readable copy of the attribution notices contained
+       within such NOTICE file, excluding those notices that do not
+       pertain to any part of the Derivative Works, in at least one
+       of the following places: within a NOTICE text file distributed
+       as part of the Derivative Works; within the Source form or
+       documentation, if provided along with the Derivative Works; or,
+       within a display generated by the Derivative Works, if and
+       wherever such third-party notices normally appear. The contents
+       of the NOTICE file are for informational purposes only and
+       do not modify the License. You may add Your own attribution
+       notices within Derivative Works that You distribute, alongside
+       or as an addendum to the NOTICE text from the Work, provided
+       that such additional attribution notices cannot be construed
+       as modifying the License.
+
+   You may add Your own copyright notice to Your modifications and
+   may provide additional or different license terms and conditions
+   for use, reproduction, or distribution of Your modifications, or
+   for any such Derivative Works as a whole, provided Your use,
+   reproduction, and distribution of the Work otherwise complies with
+   the conditions stated in this License.
+
+5. Submission of Contributions. Unless You explicitly state otherwise,
+   any Contribution intentionally submitted for inclusion in the Work
+   by You to the Licensor shall be under the terms and conditions of
+   this License, without any additional terms or conditions.
+   Notwithstanding the above, nothing herein shall supersede or modify
+   the terms of any separate contributor license agreement you may have
+   executed with Licensor regarding such Contributions.
+
+6. Trademarks. This License does not grant permission to use the trade
+   names, trademarks, service marks, or product names of the Licensor,
+   except as required for reasonable and customary use in describing the
+   origin of the Work and reproducing the content of the NOTICE file.
+
+7. Disclaimer of Warranty. Unless required by applicable law or
+   agreed to in writing, Licensor provides the Work (and each
+   Contributor provides its Contributions) on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+   implied, including, without limitation, any warranties or conditions
+   of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+   PARTICULAR PURPOSE. You are solely responsible for determining the
+   appropriateness of using or redistributing the Work and assume any
+   risks associated with Your exercise of permissions under this License.
+
+8. Limitation of Liability. In no event and under no legal theory,
+   whether in tort (including negligence), contract, or otherwise,
+   unless required by applicable law (such as deliberate and grossly
+   negligent acts) or agreed to in writing, shall any Contributor be
+   liable to You for damages, including any direct, indirect, special,
+   incidental, or consequential damages of any character arising as a
+   result of this License or out of the use or inability to use the
+   Work (including but not limited to damages for loss of goodwill,
+   work stoppage, computer failure or malfunction, or any and all
+   other commercial damages or losses), even if such Contributor
+   has been advised of the possibility of such damages.
+
+9. Accepting Warranty or Additional Support. When redistributing
+   the Work or Derivative Works thereof, You may choose to offer,
+   and charge a fee for, acceptance of support, warranty, indemnity,
+   or other liability obligations and/or rights consistent with this
+   License. However, in accepting such obligations, You may act only
+   on Your own behalf and on Your sole responsibility, not on behalf
+   of any other Contributor, and only if You agree to indemnify,
+   defend, and hold each Contributor harmless for any liability
+   incurred by, or claims asserted against, such Contributor by reason
+   of your accepting any such warranty or support.
+
+END OF TERMS AND CONDITIONS
+</code></pre>
+<h2 id="license-selection-guide"><a class="header" href="#license-selection-guide">License Selection Guide</a></h2>
+<h3 id="choose-mit-license-if"><a class="header" href="#choose-mit-license-if">Choose MIT License If:</a></h3>
+<ul>
+<li>✅ You want maximum simplicity and permissiveness</li>
+<li>✅ Your project is proprietary or closed-source</li>
+<li>✅ You prefer minimal legal complexity</li>
+<li>✅ You don't need explicit patent protection</li>
+<li>✅ You want broad compatibility with other projects</li>
+</ul>
+<h3 id="choose-apache-20-license-if"><a class="header" href="#choose-apache-20-license-if">Choose Apache 2.0 License If:</a></h3>
+<ul>
+<li>✅ You want explicit patent grant protection</li>
+<li>✅ Your project involves potential patent considerations</li>
+<li>✅ You need trademark protection provisions</li>
+<li>✅ You prefer more detailed legal terms</li>
+<li>✅ You're contributing to Apache ecosystem projects</li>
+</ul>
+<h2 id="compliance-requirements"><a class="header" href="#compliance-requirements">Compliance Requirements</a></h2>
+<h3 id="for-mit-license"><a class="header" href="#for-mit-license">For MIT License</a></h3>
+<p>When using Hayasen under the MIT License:</p>
+<ol>
+<li><strong>Include Copyright Notice</strong>: Include the MIT license text with copyright notice in your distribution</li>
+<li><strong>Attribution</strong>: Maintain attribution to the original authors</li>
+<li><strong>License Propagation</strong>: Include the license file with any redistribution</li>
+</ol>
+<h3 id="for-apache-20-license"><a class="header" href="#for-apache-20-license">For Apache 2.0 License</a></h3>
+<p>When using Hayasen under the Apache 2.0 License:</p>
+<ol>
+<li><strong>Include License</strong>: Include the Apache 2.0 license text</li>
+<li><strong>Copyright Notices</strong>: Preserve all copyright notices from the source</li>
+<li><strong>NOTICE File</strong>: If a NOTICE file exists, include it in redistributions</li>
+<li><strong>Modification Notices</strong>: Mark any files you modify</li>
+<li><strong>Patent Grant</strong>: Benefit from explicit patent grant provisions</li>
+</ol>
+<h2 id="cargotoml-configuration"><a class="header" href="#cargotoml-configuration">Cargo.toml Configuration</a></h2>
+<p>Include both licenses in your <code>Cargo.toml</code>:</p>
+<pre><code class="language-toml">[package]
+name = "hayasen"
+version = "x.x.x"
+license = "MIT OR Apache-2.0"
+authors = ["Your Name &lt;your.email@example.com&gt;"]
+description = "Embedded sensor driver library for motion tracking devices"
+repository = "https://github.com/yourusername/hayasen"
+documentation = "https://docs.rs/hayasen"
+keywords = ["embedded", "sensor", "mpu9250", "imu", "no-std"]
+categories = ["embedded", "hardware-support", "no-std"]
+</code></pre>
+<h2 id="file-structure"><a class="header" href="#file-structure">File Structure</a></h2>
+<p>Ensure these license files are present in your repository root:</p>
+<pre><code>hayasen/
+├── LICENSE-MIT         # Full MIT license text
+├── LICENSE-APACHE      # Full Apache 2.0 license text
+├── Cargo.toml         # With license = "MIT OR Apache-2.0"
+├── README.md          # License section referencing both
+└── src/
+    └── lib.rs         # With license headers
+</code></pre>
+<h2 id="source-code-headers"><a class="header" href="#source-code-headers">Source Code Headers</a></h2>
+<p>Include license headers in your source files:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Licensed under the MIT License or Apache License, Version 2.0
+// at your option. This file may not be copied, modified, or distributed
+// except according to those terms.
+
+//! Hayasen - Embedded sensor driver library
+//! 
+//! Copyright (c) [YEAR] [COPYRIGHT_HOLDER]
+//! 
+//! Licensed under either:
+//! - MIT License (LICENSE-MIT or http://opensource.org/licenses/MIT)
+//! - Apache License, Version 2.0 (LICENSE-APACHE or http://www.apache.org/licenses/LICENSE-2.0)
+//! 
+//! at your option.
+<span class="boring">}</span></code></pre></pre>
+<h2 id="third-party-dependencies"><a class="header" href="#third-party-dependencies">Third-Party Dependencies</a></h2>
+<p>When adding dependencies, ensure license compatibility:</p>
+<ul>
+<li>✅ <strong>MIT</strong>: Compatible with both MIT and Apache 2.0</li>
+<li>✅ <strong>Apache 2.0</strong>: Compatible with both licenses</li>
+<li>✅ <strong>BSD-2-Clause/BSD-3-Clause</strong>: Compatible with both</li>
+<li>⚠️ <strong>GPL variants</strong>: May require careful consideration</li>
+<li>❌ <strong>Copyleft licenses</strong>: May not be compatible with permissive dual licensing</li>
+</ul>
+<h2 id="attribution"><a class="header" href="#attribution">Attribution</a></h2>
+<p>When using Hayasen in your projects, attribution can be provided as:</p>
+<pre><code>This project uses Hayasen (https://github.com/yourusername/hayasen),
+licensed under MIT OR Apache-2.0.
+</code></pre>
+<p>Or in a more formal NOTICE file:</p>
+<pre><code>Hayasen Embedded Sensor Library
+Copyright (c) [YEAR] [COPYRIGHT_HOLDER]
+Licensed under MIT OR Apache-2.0
+
+This product includes software developed by [Your Name/Organization].
+</code></pre>
+<h2 id="commercial-use"><a class="header" href="#commercial-use">Commercial Use</a></h2>
+<p>Both licenses explicitly permit commercial use:</p>
+<ul>
+<li><strong>No royalties</strong> or licensing fees required</li>
+<li><strong>Modification rights</strong> for proprietary applications</li>
+<li><strong>Distribution rights</strong> in commercial products</li>
+<li><strong>Sublicensing</strong> permitted under both licenses</li>
+</ul>
+<h2 id="contributing"><a class="header" href="#contributing">Contributing</a></h2>
+<p>By contributing to Hayasen, you agree that your contributions will be licensed under the same dual MIT/Apache-2.0 license terms. This ensures consistency across the entire codebase and maintains the dual licensing benefits for all users.</p>
+<h3 id="contributor-license-agreement"><a class="header" href="#contributor-license-agreement">Contributor License Agreement</a></h3>
+<p>Contributors should be aware that:</p>
+<ol>
+<li>Contributions are licensed under both MIT and Apache 2.0</li>
+<li>You retain copyright to your contributions</li>
+<li>You grant broad rights to use, modify, and distribute your contributions</li>
+<li>Patent rights are handled according to Apache 2.0 terms</li>
+</ol>
+<h2 id="frequently-asked-questions"><a class="header" href="#frequently-asked-questions">Frequently Asked Questions</a></h2>
+<h3 id="q-can-i-use-hayasen-in-my-commercial-product"><a class="header" href="#q-can-i-use-hayasen-in-my-commercial-product">Q: Can I use Hayasen in my commercial product?</a></h3>
+<p><strong>A:</strong> Yes, both licenses explicitly permit commercial use without restrictions.</p>
+<h3 id="q-do-i-need-to-open-source-my-modifications"><a class="header" href="#q-do-i-need-to-open-source-my-modifications">Q: Do I need to open-source my modifications?</a></h3>
+<p><strong>A:</strong> No, both licenses are permissive and do not require you to open-source derivative works.</p>
+<h3 id="q-which-license-should-i-choose-for-my-project"><a class="header" href="#q-which-license-should-i-choose-for-my-project">Q: Which license should I choose for my project?</a></h3>
+<p><strong>A:</strong> Choose based on your needs:</p>
+<ul>
+<li>MIT for simplicity and broad compatibility</li>
+<li>Apache 2.0 for explicit patent protection</li>
+</ul>
+<h3 id="q-can-i-relicense-hayasen-under-a-different-license"><a class="header" href="#q-can-i-relicense-hayasen-under-a-different-license">Q: Can I relicense Hayasen under a different license?</a></h3>
+<p><strong>A:</strong> You can license your derivative work under different terms, but you must maintain attribution and comply with the original license terms.</p>
+<h3 id="q-what-if-i-only-want-to-use-one-of-the-licenses"><a class="header" href="#q-what-if-i-only-want-to-use-one-of-the-licenses">Q: What if I only want to use one of the licenses?</a></h3>
+<p><strong>A:</strong> You can choose to use Hayasen under either license exclusively. Simply follow the terms of your chosen license.</p>
+<hr />
+<p><strong>Disclaimer:</strong> This license information is provided for informational purposes. For legal advice regarding license compliance, consult with a qualified attorney.</p>
 
                     </main>
 

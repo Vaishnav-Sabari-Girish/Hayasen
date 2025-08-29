@@ -170,44 +170,633 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="usage"><a class="header" href="#usage">Usage</a></h1>
-<h2 id="-installation"><a class="header" href="#-installation">📦 Installation</a></h2>
-<p>Add <code>hayasen</code> to your <code>Cargo.toml</code> either by the below command or directly.</p>
-<pre><code class="language-bash"># Command Line
-cargo add hayasen --features mpu9250    #Optional for now
-</code></pre>
-<p><code>Cargo.toml</code></p>
-<pre><code class="language-toml">[dependencies]
-hayasen = { version = "*", features = ["mpu9250"] }   # For MPU9250 support
-</code></pre>
-<h2 id="-quick-start"><a class="header" href="#-quick-start">🎯 Quick Start</a></h2>
-<p>Here is a basic example of <code>hayasen</code> (Not Yet Tested on actual Hardware)</p>
+                        <h1 id="mpu9250-usage-guide"><a class="header" href="#mpu9250-usage-guide">MPU9250 Usage Guide</a></h1>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>The Hayasen MPU9250 library provides a comprehensive interface for working with the MPU9250 9-axis motion tracking device. This guide demonstrates how to use the library in various scenarios, from basic sensor reading to advanced configuration.</p>
+<div id="admonition-please-note" class="admonition admonish-note" role="note" aria-labelledby="admonition-please-note-title">
+<div class="admonition-title">
+<div id="admonition-please-note-title">
+<p>Please Note</p>
+</div>
+<a class="admonition-anchor-link" href="#admonition-please-note"></a>
+</div>
+<div>
+<p>Please note that the I2C instance used here currently is of datatype <code>TWIM</code> which corresponds to the I2C instance of a nRF Nordic microcontroller.
+So basically <code>hayasen</code> currently only supports Nordic Microcontrollers</p>
+</div>
+</div>
+<h2 id="basic-usage"><a class="header" href="#basic-usage">Basic Usage</a></h2>
+<h3 id="quick-start-with-default-configuration"><a class="header" href="#quick-start-with-default-configuration">Quick Start with Default Configuration</a></h3>
+<p>The simplest way to get started is using the <code>create_default</code> function from the <code>mpu9250_hayasen</code> module:</p>
 <pre><pre class="playground"><code class="language-rust">use hayasen::prelude::*;
-use embedded_hal::i2c::I2c;
+use hayasen::mpu9250_hayasen;
 
-fn main() -&gt; Result&lt;(), Error&lt;MyI2CError&gt;&gt; {
-    // Easy initialization with default settings
-    let mut mpu = HayasenFunctions::create_mpu9250_default(i2c, 0x68)?;
+fn main() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    // Assume you have an I2C peripheral instance
+    let i2c = setup_i2c(); // Your platform-specific I2C setup
+    let mpu_address = 0x68; // Default MPU9250 I2C address
     
-    // Read sensor data
-    let acceleration = HayasenFunctions::read_accel(&amp;mut mpu)?;
-    let temperature = HayasenFunctions::read_temp_c(&amp;mut mpu)?;
+    // Create sensor with default configuration (2G accel, 250 DPS gyro)
+    let mut sensor = mpu9250_hayasen::create_default(i2c, mpu_address)?;
     
-    println!("Temperature: {:.1}°C", temperature);
-    println!("Acceleration: {:?} g", acceleration);
+    // Read all sensor data
+    let (temperature, acceleration, angular_velocity) = mpu9250_hayasen::read_all(&amp;mut sensor)?;
+    
+    println!("Temperature: {:.2}°C", temperature);
+    println!("Acceleration [X, Y, Z]: [{:.3}, {:.3}, {:.3}] g", 
+             acceleration[0], acceleration[1], acceleration[2]);
+    println!("Angular Velocity [X, Y, Z]: [{:.3}, {:.3}, {:.3}] dps", 
+             angular_velocity[0], angular_velocity[1], angular_velocity[2]);
     
     Ok(())
 }</code></pre></pre>
+<h3 id="individual-sensor-readings"><a class="header" href="#individual-sensor-readings">Individual Sensor Readings</a></h3>
+<p>You can read each sensor independently:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+use hayasen::mpu9250_hayasen;
+
+fn read_individual_sensors() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = mpu9250_hayasen::create_default(i2c, 0x68)?;
+    
+    // Read acceleration only
+    let accel = mpu9250_hayasen::read_acceleration(&amp;mut sensor)?;
+    println!("Acceleration: X={:.3}g, Y={:.3}g, Z={:.3}g", accel[0], accel[1], accel[2]);
+    
+    // Read gyroscope only
+    let gyro = mpu9250_hayasen::read_angular_velocity(&amp;mut sensor)?;
+    println!("Angular Velocity: X={:.3}°/s, Y={:.3}°/s, Z={:.3}°/s", gyro[0], gyro[1], gyro[2]);
+    
+    // Read temperature only
+    let temp = mpu9250_hayasen::read_temperature(&amp;mut sensor)?;
+    println!("Temperature: {:.2}°C", temp);
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="advanced-configuration"><a class="header" href="#advanced-configuration">Advanced Configuration</a></h2>
+<h3 id="manual-sensor-setup"><a class="header" href="#manual-sensor-setup">Manual Sensor Setup</a></h3>
+<p>For more control over sensor configuration, use the direct API:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn advanced_setup() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    
+    // Manual initialization with custom ranges
+    sensor.initialize_sensor(
+        AccelRange::Range8G,      // Higher acceleration range
+        GyroRange::Range1000Dps   // Higher angular velocity range
+    )?;
+    
+    // Configure sample rate (divider from 1kHz base rate)
+    // Sample rate = 1000Hz / (1 + divider)
+    sensor.set_sample_rate(9)?; // 100Hz sample rate
+    
+    // Configure digital low-pass filter
+    sensor.set_dlpf_config(DlpfConfig::Bandwidth184Hz)?;
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="reading-raw-data"><a class="header" href="#reading-raw-data">Reading Raw Data</a></h3>
+<p>For applications requiring raw ADC values:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn read_raw_data() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    sensor.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
+    
+    // Read raw 16-bit values
+    let raw_accel = sensor.read_accel_raw()?;
+    let raw_gyro = sensor.read_gyro_raw()?;
+    let raw_temp = sensor.read_temp_raw()?;
+    
+    println!("Raw Accelerometer: X={}, Y={}, Z={}", raw_accel[0], raw_accel[1], raw_accel[2]);
+    println!("Raw Gyroscope: X={}, Y={}, Z={}", raw_gyro[0], raw_gyro[1], raw_gyro[2]);
+    println!("Raw Temperature: {}", raw_temp);
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="power-management"><a class="header" href="#power-management">Power Management</a></h2>
+<h3 id="sleep-mode-operation"><a class="header" href="#sleep-mode-operation">Sleep Mode Operation</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn power_management_example() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    sensor.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
+    
+    // Normal operation
+    let data = sensor.read_acceleration()?;
+    println!("Before sleep: {:?}", data);
+    
+    // Enter sleep mode to save power
+    sensor.enter_sleep_mode()?;
+    println!("Sensor in sleep mode");
+    
+    // Wake up and resume operation
+    sensor.wake_up()?;
+    
+    // Read data after waking up
+    let data_after_wake = sensor.read_acceleration()?;
+    println!("After wake: {:?}", data_after_wake);
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="real-world-applications"><a class="header" href="#real-world-applications">Real-World Applications</a></h2>
+<h3 id="motion-detection-example"><a class="header" href="#motion-detection-example">Motion Detection Example</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+use hayasen::mpu9250_hayasen;
+
+fn motion_detection_loop() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = mpu9250_hayasen::create_default(i2c, 0x68)?;
+    
+    // Motion detection thresholds
+    const ACCEL_THRESHOLD: f32 = 0.1; // g
+    const GYRO_THRESHOLD: f32 = 5.0;  // degrees per second
+    
+    loop {
+        let (temp, accel, gyro) = mpu9250_hayasen::read_all(&amp;mut sensor)?;
+        
+        // Calculate total acceleration magnitude (subtract gravity)
+        let total_accel = (accel[0].powi(2) + accel[1].powi(2) + accel[2].powi(2)).sqrt();
+        let motion_accel = (total_accel - 1.0).abs(); // Subtract 1g gravity
+        
+        // Calculate total angular velocity
+        let total_gyro = (gyro[0].powi(2) + gyro[1].powi(2) + gyro[2].powi(2)).sqrt();
+        
+        // Detect motion
+        if motion_accel &gt; ACCEL_THRESHOLD || total_gyro &gt; GYRO_THRESHOLD {
+            println!("Motion detected! Accel: {:.3}g, Gyro: {:.3}°/s", motion_accel, total_gyro);
+        }
+        
+        // Small delay between readings
+        delay_ms(50);
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="data-logging-example"><a class="header" href="#data-logging-example">Data Logging Example</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn data_logging_example() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    
+    // Configure for high-precision data logging
+    sensor.initialize_sensor(AccelRange::Range4G, GyroRange::Range500Dps)?;
+    sensor.set_sample_rate(19)?; // 50Hz sampling
+    sensor.set_dlpf_config(DlpfConfig::Bandwidth184Hz)?;
+    
+    let mut sample_count = 0;
+    const MAX_SAMPLES: usize = 1000;
+    
+    while sample_count &lt; MAX_SAMPLES {
+        let timestamp = get_timestamp(); // Your platform-specific timestamp
+        let accel = sensor.read_acceleration()?;
+        let gyro = sensor.read_angular_velocity()?;
+        let temp = sensor.read_temperature_celsius()?;
+        
+        // Log data (implement your own logging mechanism)
+        log_data(timestamp, accel, gyro, temp);
+        
+        sample_count += 1;
+        delay_ms(20); // 50Hz sampling
+    }
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="configuration-options"><a class="header" href="#configuration-options">Configuration Options</a></h2>
+<h3 id="accelerometer-ranges"><a class="header" href="#accelerometer-ranges">Accelerometer Ranges</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+// Available accelerometer ranges and their use cases
+fn configure_accelerometer_ranges() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    
+    // Choose range based on application:
+    
+    // For precise, low-acceleration measurements (e.g., tilt sensing)
+    sensor.setup_accelerometer(AccelRange::Range2G)?;
+    
+    // For general motion detection
+    sensor.setup_accelerometer(AccelRange::Range4G)?;
+    
+    // For high-impact applications (e.g., crash detection)
+    sensor.setup_accelerometer(AccelRange::Range8G)?;
+    
+    // For extreme acceleration measurements
+    sensor.setup_accelerometer(AccelRange::Range16G)?;
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="gyroscope-ranges"><a class="header" href="#gyroscope-ranges">Gyroscope Ranges</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn configure_gyroscope_ranges() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    
+    // Choose range based on expected rotation rates:
+    
+    // For slow, precise rotations (e.g., stabilization)
+    sensor.setup_gyroscope(GyroRange::Range250Dps)?;
+    
+    // For moderate rotation rates (e.g., drone control)
+    sensor.setup_gyroscope(GyroRange::Range500Dps)?;
+    
+    // For fast rotations (e.g., sports analysis)
+    sensor.setup_gyroscope(GyroRange::Range1000Dps)?;
+    
+    // For very high rotation rates (e.g., spinning objects)
+    sensor.setup_gyroscope(GyroRange::Range2000Dps)?;
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="error-handling"><a class="header" href="#error-handling">Error Handling</a></h2>
+<h3 id="comprehensive-error-handling"><a class="header" href="#comprehensive-error-handling">Comprehensive Error Handling</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+use hayasen::mpu9250_hayasen;
+
+fn robust_sensor_operation() {
+    let i2c = setup_i2c();
+    
+    match mpu9250_hayasen::create_default(i2c, 0x68) {
+        Ok(mut sensor) =&gt; {
+            loop {
+                match mpu9250_hayasen::read_all(&amp;mut sensor) {
+                    Ok((temp, accel, gyro)) =&gt; {
+                        process_sensor_data(temp, accel, gyro);
+                    },
+                    Err(e) =&gt; {
+                        match e {
+                            Error::I2c(_) =&gt; {
+                                println!("I2C communication error, retrying...");
+                                delay_ms(100);
+                                continue;
+                            },
+                            Error::NotDetected =&gt; {
+                                println!("Sensor not detected, check wiring");
+                                break;
+                            },
+                            Error::InvalidData =&gt; {
+                                println!("Invalid data received, skipping reading");
+                                continue;
+                            },
+                            Error::ConfigError =&gt; {
+                                println!("Configuration error");
+                                break;
+                            },
+                            Error::SensorSpecific(msg) =&gt; {
+                                println!("Sensor-specific error: {}", msg);
+                                break;
+                            },
+                        }
+                    }
+                }
+                delay_ms(20);
+            }
+        },
+        Err(e) =&gt; {
+            println!("Failed to initialize sensor: {:?}", e);
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="error-classification"><a class="header" href="#error-classification">Error Classification</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn classify_errors(error: Error&lt;YourI2cError&gt;) {
+    if error.is_i2c_error() {
+        println!("Communication problem - check wiring and I2C bus");
+    } else if error.is_config_error() {
+        println!("Configuration issue - check sensor settings");
+    }
+    
+    // Extract underlying I2C error if needed
+    if let Some(i2c_err) = error.into_i2c_error() {
+        handle_i2c_specific_error(i2c_err);
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="platform-specific-examples"><a class="header" href="#platform-specific-examples">Platform-Specific Examples</a></h2>
+<h3 id="esp32-example-using-esp-hal"><a class="header" href="#esp32-example-using-esp-hal">ESP32 Example (using esp-hal)</a></h3>
+<pre><pre class="playground"><code class="language-rust">#![no_std]
+#![no_main]
+
+use esp_hal::{
+    clock::ClockControl,
+    i2c::I2C,
+    peripherals::Peripherals,
+    prelude::*,
+    delay::Delay,
+};
+use hayasen::prelude::*;
+use hayasen::mpu9250_hayasen;
+
+#[entry]
+fn main() -&gt; ! {
+    let peripherals = Peripherals::take();
+    let system = peripherals.SYSTEM.split();
+    let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
+    
+    // Setup I2C
+    let i2c = I2C::new(
+        peripherals.I2C0,
+        peripherals.GPIO21, // SDA
+        peripherals.GPIO22, // SCL
+        100u32.kHz(),
+        &amp;clocks,
+    );
+    
+    let mut delay = Delay::new(&amp;clocks);
+    
+    // Initialize MPU9250
+    let mut sensor = match mpu9250_hayasen::create_default(i2c, 0x68) {
+        Ok(s) =&gt; s,
+        Err(_) =&gt; {
+            println!("Failed to initialize MPU9250");
+            loop { delay.delay_ms(1000u32); }
+        }
+    };
+    
+    loop {
+        match mpu9250_hayasen::read_all(&amp;mut sensor) {
+            Ok((temp, accel, gyro)) =&gt; {
+                println!("T: {:.1}°C | A: [{:.2}, {:.2}, {:.2}]g | G: [{:.1}, {:.1}, {:.1}]°/s",
+                        temp, accel[0], accel[1], accel[2], gyro[0], gyro[1], gyro[2]);
+            },
+            Err(_) =&gt; println!("Read error"),
+        }
+        delay.delay_ms(100u32);
+    }
+}</code></pre></pre>
+<h3 id="stm32-example-using-stm32f4xx-hal"><a class="header" href="#stm32-example-using-stm32f4xx-hal">STM32 Example (using stm32f4xx-hal)</a></h3>
+<pre><pre class="playground"><code class="language-rust">#![no_std]
+#![no_main]
+
+use panic_halt as _;
+use cortex_m_rt::entry;
+use stm32f4xx_hal::{
+    pac,
+    prelude::*,
+    i2c::I2c,
+};
+use hayasen::prelude::*;
+
+#[entry]
+fn main() -&gt; ! {
+    let dp = pac::Peripherals::take().unwrap();
+    let cp = cortex_m::peripheral::Peripherals::take().unwrap();
+    
+    let rcc = dp.RCC.constrain();
+    let clocks = rcc.cfgr.freeze();
+    
+    let gpiob = dp.GPIOB.split();
+    let scl = gpiob.pb8.into_alternate_open_drain();
+    let sda = gpiob.pb9.into_alternate_open_drain();
+    
+    let i2c = I2c::new(dp.I2C1, (scl, sda), 400.kHz(), &amp;clocks);
+    
+    let mut delay = cortex_m::delay::Delay::new(cp.SYST, clocks.hclk().to_Hz());
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    
+    // Custom initialization
+    match sensor.initialize_sensor(AccelRange::Range4G, GyroRange::Range500Dps) {
+        Ok(_) =&gt; {},
+        Err(_) =&gt; loop { delay.delay_ms(1000u32); }
+    }
+    
+    loop {
+        if let Ok(accel) = sensor.read_acceleration() {
+            // Process acceleration data
+            process_motion_data(accel);
+        }
+        delay.delay_ms(50u32);
+    }
+}</code></pre></pre>
+<h2 id="advanced-use-cases"><a class="header" href="#advanced-use-cases">Advanced Use Cases</a></h2>
+<h3 id="calibration-and-offset-correction"><a class="header" href="#calibration-and-offset-correction">Calibration and Offset Correction</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn calibrate_sensor() -&gt; Result&lt;[f32; 6], Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    sensor.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
+    
+    println!("Keep sensor stationary for calibration...");
+    delay_ms(2000);
+    
+    let mut accel_offsets = [0.0f32; 3];
+    let mut gyro_offsets = [0.0f32; 3];
+    const SAMPLES: usize = 100;
+    
+    // Collect calibration samples
+    for _ in 0..SAMPLES {
+        let accel = sensor.read_acceleration()?;
+        let gyro = sensor.read_angular_velocity()?;
+        
+        accel_offsets[0] += accel[0];
+        accel_offsets[1] += accel[1];
+        accel_offsets[2] += accel[2] - 1.0; // Subtract expected 1g on Z-axis
+        
+        gyro_offsets[0] += gyro[0];
+        gyro_offsets[1] += gyro[1];
+        gyro_offsets[2] += gyro[2];
+        
+        delay_ms(10);
+    }
+    
+    // Calculate averages
+    for i in 0..3 {
+        accel_offsets[i] /= SAMPLES as f32;
+        gyro_offsets[i] /= SAMPLES as f32;
+    }
+    
+    println!("Calibration complete!");
+    println!("Accel offsets: [{:.4}, {:.4}, {:.4}]", accel_offsets[0], accel_offsets[1], accel_offsets[2]);
+    println!("Gyro offsets: [{:.4}, {:.4}, {:.4}]", gyro_offsets[0], gyro_offsets[1], gyro_offsets[2]);
+    
+    Ok([accel_offsets[0], accel_offsets[1], accel_offsets[2], 
+        gyro_offsets[0], gyro_offsets[1], gyro_offsets[2]])
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="orientation-estimation"><a class="header" href="#orientation-estimation">Orientation Estimation</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn estimate_orientation() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    sensor.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
+    
+    loop {
+        let accel = sensor.read_acceleration()?;
+        
+        // Calculate roll and pitch from accelerometer (when stationary)
+        let roll = accel[1].atan2(accel[2]) * 180.0 / core::f32::consts::PI;
+        let pitch = (-accel[0]).atan2((accel[1].powi(2) + accel[2].powi(2)).sqrt()) 
+                   * 180.0 / core::f32::consts::PI;
+        
+        println!("Roll: {:.2}°, Pitch: {:.2}°", roll, pitch);
+        
+        delay_ms(100);
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="multi-sensor-setup"><a class="header" href="#multi-sensor-setup">Multi-Sensor Setup</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn multiple_sensors_example() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    
+    // MPU9250 can have two possible I2C addresses
+    let mut sensor1 = Mpu9250::new(i2c, 0x68); // AD0 = LOW
+    let mut sensor2 = Mpu9250::new(i2c, 0x69); // AD0 = HIGH
+    
+    // Initialize both sensors
+    sensor1.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
+    sensor2.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
+    
+    loop {
+        let accel1 = sensor1.read_acceleration()?;
+        let accel2 = sensor2.read_acceleration()?;
+        
+        println!("Sensor 1: [{:.3}, {:.3}, {:.3}]g", accel1[0], accel1[1], accel1[2]);
+        println!("Sensor 2: [{:.3}, {:.3}, {:.3}]g", accel2[0], accel2[1], accel2[2]);
+        
+        delay_ms(100);
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
+<h3 id="initialization-checklist"><a class="header" href="#initialization-checklist">Initialization Checklist</a></h3>
+<ol>
+<li><strong>Always verify sensor identity</strong> before configuration</li>
+<li><strong>Configure power management</strong> early in initialization</li>
+<li><strong>Set appropriate ranges</strong> based on your application requirements</li>
+<li><strong>Configure sample rate</strong> to match your update frequency needs</li>
+<li><strong>Handle errors gracefully</strong> with appropriate retry logic</li>
+</ol>
+<h3 id="sample-rate-guidelines"><a class="header" href="#sample-rate-guidelines">Sample Rate Guidelines</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Sample rate formula: Sample Rate = 1000Hz / (1 + SMPRT_DIV)
+sensor.set_sample_rate(0)?;   // 1000 Hz - High frequency applications
+sensor.set_sample_rate(9)?;   // 100 Hz - General motion tracking
+sensor.set_sample_rate(19)?;  // 50 Hz - Low power applications
+sensor.set_sample_rate(99)?;  // 10 Hz - Very low power monitoring
+<span class="boring">}</span></code></pre></pre>
+<h3 id="memory-usage-optimization"><a class="header" href="#memory-usage-optimization">Memory Usage Optimization</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+// For memory-constrained systems, use raw readings when possible
+fn memory_efficient_reading() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let i2c = setup_i2c();
+    let mut sensor = Mpu9250::new(i2c, 0x68);
+    sensor.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
+    
+    // Read raw data to avoid floating-point operations
+    let raw_accel = sensor.read_accel_raw()?;
+    
+    // Manual scaling only when needed
+    const SCALE_2G: f32 = 2.0 / 32768.0;
+    let scaled_x = raw_accel[0] as f32 * SCALE_2G;
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="common-issues-and-solutions"><a class="header" href="#common-issues-and-solutions">Common Issues and Solutions</a></h3>
+<p><strong>Sensor Not Detected:</strong></p>
+<ul>
+<li>Check I2C wiring (SDA, SCL, VCC, GND)</li>
+<li>Verify I2C address (0x68 or 0x69 depending on AD0 pin)</li>
+<li>Ensure proper pull-up resistors on I2C lines</li>
+</ul>
+<p><strong>Inconsistent Readings:</strong></p>
+<ul>
+<li>Check power supply stability</li>
+<li>Verify sample rate configuration</li>
+<li>Consider using digital low-pass filter</li>
+<li>Ensure sensor is properly mounted</li>
+</ul>
+<p><strong>High Noise:</strong></p>
+<ul>
+<li>Lower the digital low-pass filter bandwidth</li>
+<li>Reduce sample rate if appropriate</li>
+<li>Check for electromagnetic interference</li>
+<li>Implement software filtering</li>
+</ul>
+<h3 id="debug-helper-functions"><a class="header" href="#debug-helper-functions">Debug Helper Functions</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use hayasen::prelude::*;
+
+fn debug_sensor_status(sensor: &amp;mut Mpu9250&lt;impl I2c&gt;) -&gt; Result&lt;(), Error&lt;impl std::fmt::Debug&gt;&gt; {
+    // Verify sensor is responding
+    match sensor.verify_identity() {
+        Ok(_) =&gt; println!("✓ Sensor identity verified"),
+        Err(e) =&gt; println!("✗ Identity check failed: {:?}", e),
+    }
+    
+    // Test basic readings
+    match sensor.read_temp_raw() {
+        Ok(temp) =&gt; println!("✓ Raw temperature reading: {}", temp),
+        Err(e) =&gt; println!("✗ Temperature read failed: {:?}", e),
+    }
+    
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<p>This documentation provides comprehensive examples for using the MPU9250 library across different scenarios
+and platforms. The examples progress from simple usage to advanced applications, helping developers implement
+motion sensing in their embedded projects effectively.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="install.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="features.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="dev_notes.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -217,11 +806,11 @@ fn main() -&gt; Result&lt;(), Error&lt;MyI2CError&gt;&gt; {
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="install.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="features.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="dev_notes.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Project Structure - Hayasen - Embedded Sensor Drivers</title>
+        <title>Installation - Hayasen - Embedded Sensor Drivers</title>
 
 
         <!-- Custom HTML head -->
@@ -170,18 +170,67 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="project-structure"><a class="header" href="#project-structure">Project Structure</a></h1>
-<p>This document outlines the high-level directory and file structure of the <code>hayasen</code> project, providing an
-overview of where different components reside.</p>
-<pre><code>hayasen/
-├── src/
-│   ├── lib.rs          # Main library entry point, exposing the public API and core functionalities.
-│   ├── error.rs        # Defines a unified set of error types for consistent error handling across the library.
-│   ├── functions.rs    # Implements the function registry system, allowing dynamic management and execution of sensor-related operations.
-│   └── mpu9250.rs      # Contains the implementation for interacting with the MPU9250 inertial measurement unit (IMU) sensor.
-├── examples/           # Contains example code demonstrating how to use the `hayasen` library's features.
-└── tests/              # Houses integration and unit tests to ensure the correctness and reliability of the library.
+                        <h1 id="installation-guide-for-hayasen"><a class="header" href="#installation-guide-for-hayasen">Installation Guide for Hayasen</a></h1>
+<h2 id="1-prerequisites"><a class="header" href="#1-prerequisites">1. Prerequisites</a></h2>
+<ul>
+<li>
+<p><strong>Rust Toolchain</strong>: Ensure that Rust (with Cargo) is installed. You can install it using:</p>
+<pre><code class="language-bash">curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 </code></pre>
+</li>
+<li>
+<p><strong>Embedded Development Setup</strong>:</p>
+<ul>
+<li>
+<p>Install the target for your microcontroller (e.g., ARM Cortex-M):</p>
+<pre><code class="language-bash">rustup target add thumbv7em-none-eabihf
+</code></pre>
+</li>
+<li>
+<p>Ensure you have an appropriate linker and build tools installed.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Optional</strong>: For cross-compilation, tools like <code>probe-rs</code> or <code>cargo-embed</code> can be used.</p>
+</li>
+</ul>
+<hr />
+<h2 id="2-adding-hayasen-to-your-project"><a class="header" href="#2-adding-hayasen-to-your-project">2. Adding Hayasen to Your Project</a></h2>
+<h3 id="option-a-using-cargotoml"><a class="header" href="#option-a-using-cargotoml">Option A: Using <code>Cargo.toml</code></a></h3>
+<p>Add the following line to your project's <code>Cargo.toml</code> under <code>[dependencies]</code>:</p>
+<pre><code class="language-toml">[dependencies]
+hayasen = { git = "https://github.com/Vaishnav-Sabari-Girish/Hayasen" }
+</code></pre>
+<h3 id="option-b-using-cargo-add"><a class="header" href="#option-b-using-cargo-add">Option B: Using <code>cargo add</code></a></h3>
+<p>You can add Hayasen directly via Cargo command:</p>
+<pre><code class="language-bash">cargo add --git https://github.com/Vaishnav-Sabari-Girish/Hayasen
+</code></pre>
+<p>This ensures that your project is always linked to the latest version of the crate.</p>
+<hr />
+<h2 id="3-building-documentation-optional-but-recommended"><a class="header" href="#3-building-documentation-optional-but-recommended">3. Building Documentation (Optional but Recommended)</a></h2>
+<p>To view the crate's documentation locally:</p>
+<pre><code class="language-bash">cargo doc --open
+</code></pre>
+<p>This command builds and opens the documentation in your browser.</p>
+<hr />
+<h2 id="4-example-environment-setup"><a class="header" href="#4-example-environment-setup">4. Example Environment Setup</a></h2>
+<p>A minimal <code>Cargo.toml</code> for a project using Hayasen might look like:</p>
+<pre><code class="language-toml">[package]
+name = "sensor_app"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+hayasen = { git = "https://github.com/Vaishnav-Sabari-Girish/Hayasen" }
+embedded-hal = "0.2"
+</code></pre>
+<hr />
+<h2 id="5-verifying-installation"><a class="header" href="#5-verifying-installation">5. Verifying Installation</a></h2>
+<p>Run a test build to ensure everything is set up correctly:</p>
+<pre><code class="language-bash">cargo build --target thumbv7em-none-eabihf
+</code></pre>
+<p>If successful, you're ready to start integrating Hayasen with your embedded projects.</p>
 
                     </main>
 
@@ -191,7 +240,7 @@ overview of where different components reside.</p>
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="contributing.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="usage.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -205,7 +254,7 @@ overview of where different components reside.</p>
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="contributing.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="usage.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

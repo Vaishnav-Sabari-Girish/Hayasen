@@ -1,0 +1,817 @@
+<!DOCTYPE HTML>
+<html lang="en" class="mocha sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Development Notes - Hayasen - Embedded Sensor Drivers</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="./catppuccin-admonish.css">
+        <link rel="stylesheet" href="./mdbook-admonish.css">
+        <link rel="stylesheet" href="./theme/catppuccin.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "mocha";
+            const default_dark_theme = "macchiato";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('mocha')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="latte">Latte</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mocha">Mocha</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="frappe">Frappe</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="macchiato">Macchiato</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Hayasen - Embedded Sensor Drivers</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/Vaishnav-Sabari-Girish/Hayasen" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="development-notes---hayasen-crate"><a class="header" href="#development-notes---hayasen-crate">Development Notes - Hayasen Crate</a></h1>
+<h2 id="crate-structure"><a class="header" href="#crate-structure">Crate Structure</a></h2>
+<h3 id="module-organization"><a class="header" href="#module-organization">Module Organization</a></h3>
+<p>The crate follows a modular design pattern optimized for embedded systems:</p>
+<pre><code>hayasen/
+├── src/
+│   ├── lib.rs          # Main library entry point
+│   ├── error.rs        # Unified error types
+│   ├── functions.rs    # Function registry system
+│   └── mpu9250.rs      # MPU9250 sensor implementation
+├── examples/           # Usage examples
+└── tests/              # Integration tests
+</code></pre>
+<h3 id="key-architectural-decisions"><a class="header" href="#key-architectural-decisions">Key Architectural Decisions</a></h3>
+<h4 id="1-feature-gated-compilation"><a class="header" href="#1-feature-gated-compilation">1. Feature-Gated Compilation</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// lib.rs
+#[cfg(feature = "mpu9250")]
+pub mod mpu9250;
+
+#[cfg(feature = "mpu9250")]
+pub use crate::mpu9250::*;
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Rationale:</strong> The crate uses conditional compilation to include only the sensors you need, reducing binary size and compilation time. This is crucial for resource-constrained embedded systems.</p>
+<p><strong>Usage:</strong></p>
+<pre><code class="language-toml">[dependencies]
+hayasen = { version = "x.x.x", features = ["mpu9250"] }
+</code></pre>
+<h4 id="2-prelude-pattern"><a class="header" href="#2-prelude-pattern">2. Prelude Pattern</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod prelude {
+    pub use crate::error::Error;
+    #[cfg(feature = "mpu9250")]
+    pub use crate::mpu9250::*;
+    pub use embedded_hal::i2c::I2c;
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Purpose:</strong> Provides a convenient way to import commonly used types and traits. Users can simply <code>use hayasen::prelude::*;</code> to get everything they need.</p>
+<h4 id="3-convenience-layer-mpu9250_hayasen"><a class="header" href="#3-convenience-layer-mpu9250_hayasen">3. Convenience Layer (<code>mpu9250_hayasen</code>)</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod mpu9250_hayasen {
+    // Simplified API for common operations
+    pub fn create_default&lt;I2C, E&gt;(i2c: I2C, address: u8) -&gt; Result&lt;mpu9250::Mpu9250&lt;I2C&gt;, Error&lt;E&gt;&gt;
+    pub fn read_all&lt;I2C, E&gt;(sensor: &amp;mut mpu9250::Mpu9250&lt;I2C&gt;) -&gt; Result&lt;(f32, [f32; 3], [f32; 3]), Error&lt;E&gt;&gt;
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Reduces boilerplate for common operations</li>
+<li>Provides sensible defaults for new users</li>
+<li>Maintains access to low-level API for advanced users</li>
+</ul>
+<h3 id="driver-architecture"><a class="header" href="#driver-architecture">Driver Architecture</a></h3>
+<h4 id="core-driver-structure"><a class="header" href="#core-driver-structure">Core Driver Structure</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct Mpu9250&lt;I2C&gt; {
+    i2c: I2C,           // Owned I2C peripheral
+    address: u8,        // Device I2C address
+    accel_scale: f32,   // Cached scaling factor for acceleration
+    gyro_scale: f32,    // Cached scaling factor for angular velocity
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Design Principles:</strong></p>
+<ul>
+<li><strong>Ownership Model:</strong> The driver takes ownership of the I2C peripheral to prevent conflicts</li>
+<li><strong>Zero-Cost Abstractions:</strong> Scale factors are pre-calculated and cached to avoid runtime divisions</li>
+<li><strong>Type Safety:</strong> Generic over I2C type for platform independence</li>
+</ul>
+<h4 id="state-management"><a class="header" href="#state-management">State Management</a></h4>
+<p>The driver maintains minimal state to reduce memory footprint:</p>
+<ul>
+<li>Scale factors are calculated once during configuration</li>
+<li>No internal buffering or filtering (left to user applications)</li>
+<li>Stateless register operations for maximum flexibility</li>
+</ul>
+<h2 id="no_std-compatibility"><a class="header" href="#no_std-compatibility"><code>no_std</code> Compatibility</a></h2>
+<h3 id="core-requirements"><a class="header" href="#core-requirements">Core Requirements</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>#![no_std]
+#![no_main]  // For applications, not the library itself
+<span class="boring">fn main() {
+</span><span class="boring">}</span></code></pre></pre>
+<h3 id="memory-management"><a class="header" href="#memory-management">Memory Management</a></h3>
+<h4 id="no-dynamic-allocation"><a class="header" href="#no-dynamic-allocation">No Dynamic Allocation</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// ✓ Stack-allocated arrays
+let mut buffer = [0u8; 6];
+
+// ✗ Avoid heap allocation
+// let mut buffer = vec![0u8; 6];  // This would require std
+<span class="boring">}</span></code></pre></pre>
+<h4 id="fixed-size-buffers"><a class="header" href="#fixed-size-buffers">Fixed-Size Buffers</a></h4>
+<p>All I2C operations use compile-time sized buffers:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn read_accel_raw(&amp;mut self) -&gt; Result&lt;[i16; 3], Error&lt;E&gt;&gt; {
+    let mut buffer = [0u8; 6];  // Fixed size, stack allocated
+    // ...
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="core-library-dependencies"><a class="header" href="#core-library-dependencies">Core Library Dependencies</a></h3>
+<p>The crate only depends on <code>core</code> and <code>embedded-hal</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use core::fmt::{Debug, Formatter, Result};  // ✓ Core library
+use embedded_hal::i2c::I2c;                  // ✓ Hardware abstraction
+
+// ✗ Avoid std dependencies
+// use std::vec::Vec;
+// use std::collections::HashMap;
+<span class="boring">}</span></code></pre></pre>
+<h3 id="floating-point-considerations"><a class="header" href="#floating-point-considerations">Floating Point Considerations</a></h3>
+<h4 id="target-compatibility"><a class="header" href="#target-compatibility">Target Compatibility</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// The crate uses f32 for sensor data conversion
+let temperature = (raw as f32) / 340.0 + 36.53;
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Uses <code>f32</code> for better performance on 32-bit ARM Cortex-M</li>
+<li>All calculations are optimized for embedded floating-point units</li>
+<li>For targets without FPU, consider using fixed-point arithmetic wrapper</li>
+</ul>
+<h4 id="alternative-for-no-fpu-targets"><a class="header" href="#alternative-for-no-fpu-targets">Alternative for No-FPU Targets</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Example fixed-point implementation (not included in crate)
+pub fn read_acceleration_fixed(&amp;mut self) -&gt; Result&lt;[i32; 3], Error&lt;E&gt;&gt; {
+    let raw = self.read_accel_raw()?;
+    // Scale to milligee (1/1000 g) using integer math
+    let scale_factor = (self.accel_scale * 1000.0) as i32;
+    Ok([
+        (raw[0] as i32 * scale_factor) / 1000,
+        (raw[1] as i32 * scale_factor) / 1000,
+        (raw[2] as i32 * scale_factor) / 1000,
+    ])
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="const-generics-and-compile-time-optimization"><a class="header" href="#const-generics-and-compile-time-optimization">Const Generics and Compile-Time Optimization</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Register addresses are compile-time constants
+const WHO_AM_I: u8 = 0x75;
+const ACCEL_XOUT_H: u8 = 0x3B;
+
+// Enums are zero-cost abstractions
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum AccelRange {
+    Range2G,    // Compiles to simple integer values
+    Range4G,
+    Range8G,
+    Range16G,
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="safety-considerations"><a class="header" href="#safety-considerations">Safety Considerations</a></h2>
+<h3 id="i2c-communication-safety"><a class="header" href="#i2c-communication-safety">I2C Communication Safety</a></h3>
+<h4 id="transaction-atomicity"><a class="header" href="#transaction-atomicity">Transaction Atomicity</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn read_accel_raw(&amp;mut self) -&gt; Result&lt;[i16; 3], Error&lt;E&gt;&gt; {
+    let mut buffer = [0u8; 6];
+    self.i2c.write(self.address, &amp;[ACCEL_XOUT_H])?;  // Register pointer
+    self.i2c.read(self.address, &amp;mut buffer)?;       // Read data
+    // ... process buffer
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Critical Points:</strong></p>
+<ul>
+<li><strong>Atomic Operations:</strong> Each register read is a complete write-then-read transaction</li>
+<li><strong>Error Propagation:</strong> I2C errors are immediately propagated using <code>?</code> operator</li>
+<li><strong>Buffer Safety:</strong> Fixed-size buffers prevent overflow issues</li>
+</ul>
+<h4 id="address-validation"><a class="header" href="#address-validation">Address Validation</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn verify_identity(&amp;mut self) -&gt; Result&lt;(), Error&lt;E&gt;&gt; {
+    let mut buffer = [0u8];
+    self.i2c.write(self.address, &amp;[WHO_AM_I])?;
+    self.i2c.read(self.address, &amp;mut buffer)?;
+    if buffer[0] != WHO_AM_I_VALUE {
+        return Err(Error::NotDetected);  // Explicit validation
+    }
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Safety Features:</strong></p>
+<ul>
+<li><strong>Device Verification:</strong> Always check WHO_AM_I register before operation</li>
+<li><strong>Type Safety:</strong> Rust's type system prevents incorrect address usage</li>
+<li><strong>Explicit Error States:</strong> Clear error types for different failure modes</li>
+</ul>
+<h3 id="memory-safety"><a class="header" href="#memory-safety">Memory Safety</a></h3>
+<h4 id="buffer-bounds-checking"><a class="header" href="#buffer-bounds-checking">Buffer Bounds Checking</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Safe array access - Rust prevents buffer overruns at compile time
+let x = ((buffer[0] as i16) &lt;&lt; 8) | buffer[1] as i16;  // Safe indexing
+let y = ((buffer[2] as i16) &lt;&lt; 8) | buffer[3] as i16;  // Bounds checked
+let z = ((buffer[4] as i16) &lt;&lt; 8) | buffer[5] as i16;  // Compile-time verified
+<span class="boring">}</span></code></pre></pre>
+<h4 id="integer-overflow-protection"><a class="header" href="#integer-overflow-protection">Integer Overflow Protection</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Safe conversion with explicit casting
+let x = raw[0] as f32 * self.accel_scale;  // Explicit type conversion
+
+// For temperature calculation, use checked arithmetic in critical applications
+pub fn read_temperature_celsius_safe(&amp;mut self) -&gt; Result&lt;f32, Error&lt;E&gt;&gt; {
+    let raw = self.read_temp_raw()?;
+    let temp_f64 = (raw as f64) / 340.0 + 36.53;  // Higher precision intermediate
+    Ok(temp_f64 as f32)
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="register-access-safety"><a class="header" href="#register-access-safety">Register Access Safety</a></h3>
+<h4 id="read-modify-write-operations"><a class="header" href="#read-modify-write-operations">Read-Modify-Write Operations</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn wake_up(&amp;mut self) -&gt; Result&lt;(), Error&lt;E&gt;&gt; {
+    let mut buffer = [0u8];
+    self.i2c.write(self.address, &amp;[PWR_MGMT_1])?;     // Read current value
+    self.i2c.read(self.address, &amp;mut buffer)?;
+    let new_config = buffer[0] &amp; 0xBF;                // Clear sleep bit safely
+    self.i2c.write(self.address, &amp;[PWR_MGMT_1, new_config])?;  // Write back
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Safety Measures:</strong></p>
+<ul>
+<li><strong>Atomic RMW:</strong> Complete read-modify-write sequence</li>
+<li><strong>Bit Masking:</strong> Safe bit manipulation using explicit masks</li>
+<li><strong>State Preservation:</strong> Only modify intended bits, preserve others</li>
+</ul>
+<h3 id="error-handling-strategy"><a class="header" href="#error-handling-strategy">Error Handling Strategy</a></h3>
+<h4 id="comprehensive-error-types"><a class="header" href="#comprehensive-error-types">Comprehensive Error Types</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Clone, PartialEq, Eq)]
+pub enum Error&lt;E&gt; {
+    I2c(E),                    // Underlying I2C errors
+    InvalidData,               // Data validation failures
+    NotDetected,              // Device not found/responding
+    ConfigError,              // Configuration parameter errors
+    SensorSpecific(&amp;'static str), // Sensor-specific error messages
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="error-recovery-patterns"><a class="header" href="#error-recovery-patterns">Error Recovery Patterns</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Recommended error handling pattern
+fn safe_sensor_operation() -&gt; Result&lt;(), Error&lt;YourI2cError&gt;&gt; {
+    let mut retry_count = 0;
+    const MAX_RETRIES: u8 = 3;
+    
+    loop {
+        match sensor.read_acceleration() {
+            Ok(data) =&gt; return Ok(process_data(data)),
+            Err(Error::I2c(_)) if retry_count &lt; MAX_RETRIES =&gt; {
+                retry_count += 1;
+                delay_ms(10);  // Brief delay before retry
+                continue;
+            },
+            Err(e) =&gt; return Err(e),  // Propagate non-recoverable errors
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="concurrency-safety"><a class="header" href="#concurrency-safety">Concurrency Safety</a></h3>
+<h4 id="single-threaded-design"><a class="header" href="#single-threaded-design">Single-Threaded Design</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// The driver requires &amp;mut self for all operations
+impl&lt;I2C, E&gt; Mpu9250&lt;I2C&gt; where I2C: I2c&lt;Error = E&gt; {
+    pub fn read_acceleration(&amp;mut self) -&gt; Result&lt;[f32; 3], Error&lt;E&gt;&gt;
+    //                        ^^^^ Exclusive access required
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Implications:</strong></p>
+<ul>
+<li><strong>Thread Safety:</strong> Not <code>Send</code> or <code>Sync</code> by default - I2C peripherals are typically not thread-safe</li>
+<li><strong>Exclusive Access:</strong> Prevents concurrent access to I2C bus</li>
+<li><strong>RAII Pattern:</strong> Resource cleanup handled by Rust's ownership system</li>
+</ul>
+<h4 id="interrupt-safety"><a class="header" href="#interrupt-safety">Interrupt Safety</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// For interrupt-driven applications
+fn interrupt_safe_reading() {
+    // Disable interrupts during I2C transaction if required by your platform
+    critical_section::with(|_cs| {
+        let result = sensor.read_acceleration();
+        // Process result...
+    });
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="performance-considerations"><a class="header" href="#performance-considerations">Performance Considerations</a></h3>
+<h4 id="zero-copy-design"><a class="header" href="#zero-copy-design">Zero-Copy Design</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Direct array return - no heap allocation
+pub fn read_accel_raw(&amp;mut self) -&gt; Result&lt;[i16; 3], Error&lt;E&gt;&gt; {
+    // Returns stack-allocated array directly
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="minimal-register-access"><a class="header" href="#minimal-register-access">Minimal Register Access</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Efficient register reading - single transaction for multiple axes
+let mut buffer = [0u8; 6];  // Read all 6 bytes (3 axes × 2 bytes) at once
+self.i2c.write(self.address, &amp;[ACCEL_XOUT_H])?;
+self.i2c.read(self.address, &amp;mut buffer)?;
+<span class="boring">}</span></code></pre></pre>
+<h3 id="development-workflow"><a class="header" href="#development-workflow">Development Workflow</a></h3>
+<h4 id="testing-strategy"><a class="header" href="#testing-strategy">Testing Strategy</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    // Mock I2C for unit testing
+    struct MockI2c {
+        expected_writes: Vec&lt;Vec&lt;u8&gt;&gt;,
+        read_responses: Vec&lt;Vec&lt;u8&gt;&gt;,
+    }
+    
+    impl I2c for MockI2c {
+        type Error = ();
+        
+        fn write(&amp;mut self, _addr: u8, data: &amp;[u8]) -&gt; Result&lt;(), Self::Error&gt; {
+            // Verify expected write operations
+            Ok(())
+        }
+        
+        fn read(&amp;mut self, _addr: u8, buffer: &amp;mut [u8]) -&gt; Result&lt;(), Self::Error&gt; {
+            // Return mock data
+            Ok(())
+        }
+    }
+    
+    #[test]
+    fn test_sensor_initialization() {
+        let mock_i2c = MockI2c::new();
+        let mut sensor = Mpu9250::new(mock_i2c, 0x68);
+        // Test initialization logic...
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="documentation-guidelines"><a class="header" href="#documentation-guidelines">Documentation Guidelines</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// Reads accelerometer data in g-force units
+/// 
+/// # Returns
+/// 
+/// Array of [X, Y, Z] acceleration values in g-force units.
+/// The scaling is automatically applied based on the configured range.
+/// 
+/// # Errors
+/// 
+/// Returns `Error::I2c` if communication fails.
+/// 
+/// # Example
+/// 
+/// ```no_run
+/// use hayasen::prelude::*;
+/// 
+/// let mut sensor = Mpu9250::new(i2c, 0x68);
+/// sensor.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
+/// let accel = sensor.read_acceleration()?;
+/// println!("Acceleration: {:?}", accel);
+/// ```
+pub fn read_acceleration(&amp;mut self) -&gt; Result&lt;[f32; 3], Error&lt;E&gt;&gt;
+<span class="boring">}</span></code></pre></pre>
+<h3 id="platform-integration-notes"><a class="header" href="#platform-integration-notes">Platform Integration Notes</a></h3>
+<h4 id="embedded-hal-compatibility"><a class="header" href="#embedded-hal-compatibility">Embedded HAL Compatibility</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Generic over any I2C implementation
+impl&lt;I2C, E&gt; Mpu9250&lt;I2C&gt;
+where 
+    I2C: I2c&lt;Error = E&gt;  // Uses embedded-hal trait
+{
+    // Platform-agnostic implementation
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li><strong>Platform Independence:</strong> Works with any embedded-hal compliant I2C driver</li>
+<li><strong>Type Safety:</strong> Compile-time verification of I2C compatibility</li>
+<li><strong>Error Propagation:</strong> Preserves underlying platform error types</li>
+</ul>
+<h4 id="memory-layout-considerations"><a class="header" href="#memory-layout-considerations">Memory Layout Considerations</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[repr(C)]
+struct SensorData {
+    temperature: f32,    // 4 bytes
+    accel: [f32; 3],    // 12 bytes
+    gyro: [f32; 3],     // 12 bytes
+}  // Total: 28 bytes - predictable layout
+<span class="boring">}</span></code></pre></pre>
+<h3 id="safety-patterns"><a class="header" href="#safety-patterns">Safety Patterns</a></h3>
+<h4 id="resource-management"><a class="header" href="#resource-management">Resource Management</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// RAII pattern ensures I2C is properly released
+impl&lt;I2C&gt; Drop for Mpu9250&lt;I2C&gt; {
+    fn drop(&amp;mut self) {
+        // I2C peripheral is automatically returned when Mpu9250 is dropped
+        // No explicit cleanup required due to Rust's ownership system
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="initialization-safety"><a class="header" href="#initialization-safety">Initialization Safety</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn initialize_sensor(&amp;mut self, accel_range: AccelRange, gyro_range: GyroRange) -&gt; Result&lt;(), Error&lt;E&gt;&gt; {
+    self.verify_identity()?;        // Always verify device first
+    self.configure_power()?;        // Ensure proper power state
+    self.setup_accelerometer(accel_range)?;  // Configure before use
+    self.setup_gyroscope(gyro_range)?;       // Configure before use
+    Ok(())
+}
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Safety Chain:</strong></p>
+<ol>
+<li>Device identity verification prevents wrong device communication</li>
+<li>Power configuration ensures device is ready</li>
+<li>Sensor configuration sets known state before operation</li>
+</ol>
+<h4 id="register-access-patterns"><a class="header" href="#register-access-patterns">Register Access Patterns</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Safe register write pattern
+fn write_register(&amp;mut self, register: u8, value: u8) -&gt; Result&lt;(), Error&lt;E&gt;&gt; {
+    // Always write register address followed by data
+    self.i2c.write(self.address, &amp;[register, value])?;
+    Ok(())
+}
+
+// Safe register read pattern  
+fn read_register(&amp;mut self, register: u8) -&gt; Result&lt;u8, Error&lt;E&gt;&gt; {
+    let mut buffer = [0u8; 1];
+    self.i2c.write(self.address, &amp;[register])?;      // Set register pointer
+    self.i2c.read(self.address, &amp;mut buffer)?;       // Read data
+    Ok(buffer[0])
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="error-safety-guarantees"><a class="header" href="#error-safety-guarantees">Error Safety Guarantees</a></h3>
+<h4 id="fail-fast-design"><a class="header" href="#fail-fast-design">Fail-Fast Design</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Sensor operations fail immediately on error
+pub fn read_acceleration(&amp;mut self) -&gt; Result&lt;[f32; 3], Error&lt;E&gt;&gt; {
+    let raw = self.read_accel_raw()?;  // Fail fast on I2C error
+    // Only proceed if raw read succeeded
+    let x = raw[0] as f32 * self.accel_scale;
+    // ...
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="error-propagation-chain"><a class="header" href="#error-propagation-chain">Error Propagation Chain</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Error chain: I2C Error -&gt; Driver Error -&gt; Application Error
+Hardware I2C Error
+    ↓ (From&lt;E&gt; implementation)
+Driver Error&lt;E&gt;
+    ↓ (? operator)  
+Application Error Handling
+<span class="boring">}</span></code></pre></pre>
+<h3 id="integration-patterns"><a class="header" href="#integration-patterns">Integration Patterns</a></h3>
+<h4 id="dependency-injection"><a class="header" href="#dependency-injection">Dependency Injection</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// The driver doesn't create its own I2C - it's injected
+let i2c = platform_specific_i2c_setup();
+let sensor = Mpu9250::new(i2c, address);  // Dependency injection
+<span class="boring">}</span></code></pre></pre>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Testability with mock I2C implementations</li>
+<li>Platform flexibility</li>
+<li>Resource sharing control</li>
+</ul>
+<h4 id="builder-pattern-extension"><a class="header" href="#builder-pattern-extension">Builder Pattern Extension</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Example extension for complex configurations
+impl&lt;I2C, E&gt; Mpu9250&lt;I2C&gt; 
+where I2C: I2c&lt;Error = E&gt;
+{
+    pub fn builder(i2c: I2C, address: u8) -&gt; SensorBuilder&lt;I2C&gt; {
+        SensorBuilder::new(i2c, address)
+    }
+}
+
+pub struct SensorBuilder&lt;I2C&gt; {
+    sensor: Mpu9250&lt;I2C&gt;,
+    configured: bool,
+}
+
+impl&lt;I2C, E&gt; SensorBuilder&lt;I2C&gt; 
+where I2C: I2c&lt;Error = E&gt;
+{
+    pub fn with_accel_range(mut self, range: AccelRange) -&gt; Result&lt;Self, Error&lt;E&gt;&gt; {
+        self.sensor.setup_accelerometer(range)?;
+        Ok(self)
+    }
+    
+    pub fn build(self) -&gt; Result&lt;Mpu9250&lt;I2C&gt;, Error&lt;E&gt;&gt; {
+        if !self.configured {
+            return Err(Error::ConfigError);
+        }
+        Ok(self.sensor)
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="debugging-and-development"><a class="header" href="#debugging-and-development">Debugging and Development</a></h3>
+<h4 id="register-debug-utilities"><a class="header" href="#register-debug-utilities">Register Debug Utilities</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[cfg(debug_assertions)]
+impl&lt;I2C, E&gt; Mpu9250&lt;I2C&gt;
+where I2C: I2c&lt;Error = E&gt;
+{
+    pub fn dump_registers(&amp;mut self) -&gt; Result&lt;(), Error&lt;E&gt;&gt; {
+        let registers = [WHO_AM_I, PWR_MGMT_1, ACCEL_CONFIG, GYRO_CONFIG];
+        
+        for &amp;reg in &amp;registers {
+            match self.read_register(reg) {
+                Ok(value) =&gt; println!("Register 0x{:02X}: 0x{:02X}", reg, value),
+                Err(e) =&gt; println!("Failed to read register 0x{:02X}: {:?}", reg, e),
+            }
+        }
+        Ok(())
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="compile-time-configuration-validation"><a class="header" href="#compile-time-configuration-validation">Compile-Time Configuration Validation</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Use const assertions for compile-time validation
+const _: () = {
+    assert!(WHO_AM_I_VALUE == 0x71, "Incorrect WHO_AM_I value for MPU9250");
+};
+<span class="boring">}</span></code></pre></pre>
+<h3 id="performance-optimization-notes"><a class="header" href="#performance-optimization-notes">Performance Optimization Notes</a></h3>
+<h4 id="batch-operations"><a class="header" href="#batch-operations">Batch Operations</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Reading all axes in single I2C transaction is more efficient
+pub fn read_accel_raw(&amp;mut self) -&gt; Result&lt;[i16; 3], Error&lt;E&gt;&gt; {
+    let mut buffer = [0u8; 6];  // Read all 3 axes at once
+    // More efficient than 3 separate 2-byte reads
+}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="cache-friendly-access-patterns"><a class="header" href="#cache-friendly-access-patterns">Cache-Friendly Access Patterns</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Scale factors are cached to avoid repeated calculations
+impl&lt;I2C, E&gt; Mpu9250&lt;I2C&gt; {
+    pub fn setup_accelerometer(&amp;mut self, range: AccelRange) -&gt; Result&lt;(), Error&lt;E&gt;&gt; {
+        let (config_value, scale) = match range {
+            AccelRange::Range2G =&gt; (0x00, 2.0 / 32768.0),  // Pre-calculated
+            // ...
+        };
+        self.accel_scale = scale;  // Cache for future use
+        Ok(())
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="future-development-considerations"><a class="header" href="#future-development-considerations">Future Development Considerations</a></h3>
+<h4 id="extensibility"><a class="header" href="#extensibility">Extensibility</a></h4>
+<ul>
+<li><strong>Modular Design:</strong> Easy to add new sensor support via feature flags</li>
+<li><strong>Trait Abstractions:</strong> Common sensor operations could be abstracted into traits</li>
+<li><strong>Async Support:</strong> Could be extended for async I2C operations</li>
+</ul>
+<h4 id="version-compatibility"><a class="header" href="#version-compatibility">Version Compatibility</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Use semantic versioning for breaking changes
+// Major: Breaking API changes
+// Minor: New features, backwards compatible  
+// Patch: Bug fixes only
+<span class="boring">}</span></code></pre></pre>
+<p>The crate is designed with embedded systems' constraints in mind, prioritizing safety, performance, and resource efficiency while maintaining a clean, intuitive API.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="usage.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="contributing.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="usage.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="contributing.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

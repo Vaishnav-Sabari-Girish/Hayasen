@@ -170,37 +170,30 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<details id="admonition-warning-early-development-stage" class="admonition admonish-warning" role="note" aria-labelledby="admonition-warning-early-development-stage-title">
-<summary class="admonition-title">
-<div id="admonition-warning-early-development-stage-title">
-<p>Warning: Early Development Stage</p>
-</div>
-<a class="admonition-anchor-link" href="#admonition-warning-early-development-stage"></a>
-</summary>
-<div>
-<p>This library is currently under active development and has not been thoroughly tested.
-Use in production systems at your own risk. APIs may change without notice.</p>
-</div>
-</details>
-<h2 id="what-is-hayasen"><a class="header" href="#what-is-hayasen">What is Hayasen</a></h2>
-<p>Hayasen is an Embedded Rust library designed to simplify sensor integration in embedded systems.
-It provides unified, type-safe interfaces for various sensors with a focus on ease of use and reliability.</p>
-<h3 id="-currently-supported-sensors"><a class="header" href="#-currently-supported-sensors">🚀 Currently Supported Sensors</a></h3>
+                        <h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<p><strong>Hayasen</strong> is a lightweight, <code>no_std</code>-friendly Rust crate designed to provide a clean and modular interface
+for a wide range of sensors. While initial support focuses on the <strong>MPU9250</strong> inertial measurement unit (IMU),
+the architecture is built to easily extend to other sensors and communication protocols beyond I²C.</p>
+<p>This crate is ideal for:</p>
 <ul>
-<li><strong>MPU9250</strong> : 9-axis motion tracking device (accelerometer, gyroscope, temperature) - <em>Work in Progress</em></li>
+<li><strong>Embedded systems</strong> running on microcontrollers (e.g., STM32, RP2040, ESP32, etc.).</li>
+<li><strong>Bare-metal Rust</strong> applications requiring efficient, hardware-safe abstraction layers.</li>
+<li>Developers seeking <strong>unified error handling</strong>, modular sensor APIs, and minimal runtime overhead.</li>
 </ul>
-<h2 id="stargazers-over-time"><a class="header" href="#stargazers-over-time">Stargazers over time</a></h2>
-<p><a href="https://starchart.cc/Vaishnav-Sabari-Girish/Hayasen"><img src="https://starchart.cc/Vaishnav-Sabari-Girish/Hayasen.svg?variant=dark" alt="Stargazers over time" /></a></p>
-<h2 id="stargazers-thank-you-for-starring-this-repository"><a class="header" href="#stargazers-thank-you-for-starring-this-repository">Stargazers (Thank you for starring this repository)</a></h2>
-<p><a href="https://github.com/Vaishnav-Sabari-Girish/Hayasen/stargazers"><img src="https://reporoster.com/stars/dark/Vaishnav-Sabari-Girish/Hayasen" alt="Stargazers repo roster for @Vaishnav-Sabari-Girish/Hayasen" /></a></p>
+<p>Key highlights:</p>
+<ul>
+<li>Extensible design for multiple sensor families.</li>
+<li>Unified error management through a generic <code>Error&lt;E&gt;</code> enum.</li>
+<li>Clear separation of concerns across modules for maintainability.</li>
+<li><code>no_std</code> support for resource-constrained environments.</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
 
-                            <a rel="next prefetch" href="usage.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="features.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -211,7 +204,7 @@ It provides unified, type-safe interfaces for various sensors with a focus on ea
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
 
-                    <a rel="next prefetch" href="usage.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="features.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
