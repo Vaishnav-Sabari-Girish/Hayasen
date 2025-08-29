@@ -1,0 +1,497 @@
+<!DOCTYPE HTML>
+<html lang="en" class="mocha sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Hayasen - Embedded Sensor Drivers</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="./catppuccin-admonish.css">
+        <link rel="stylesheet" href="./mdbook-admonish.css">
+        <link rel="stylesheet" href="./theme/catppuccin.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "mocha";
+            const default_dark_theme = "macchiato";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('mocha')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="latte">Latte</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mocha">Mocha</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="frappe">Frappe</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="macchiato">Macchiato</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Hayasen - Embedded Sensor Drivers</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/Vaishnav-Sabari-Girish/Hayasen" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<details id="admonition-warning-early-development-stage" class="admonition admonish-warning" role="note" aria-labelledby="admonition-warning-early-development-stage-title">
+<summary class="admonition-title">
+<div id="admonition-warning-early-development-stage-title">
+<p>Warning: Early Development Stage</p>
+</div>
+<a class="admonition-anchor-link" href="intro.html#admonition-warning-early-development-stage"></a>
+</summary>
+<div>
+<p>This library is currently under active development and has not been thoroughly tested.
+Use in production systems at your own risk. APIs may change without notice.</p>
+</div>
+</details>
+<h2 id="what-is-hayasen"><a class="header" href="#what-is-hayasen">What is Hayasen</a></h2>
+<p>Hayasen is an Embedded Rust library designed to simplify sensor integration in embedded systems.
+It provides unified, type-safe interfaces for various sensors with a focus on ease of use and reliability.</p>
+<h3 id="-currently-supported-sensors"><a class="header" href="#-currently-supported-sensors">🚀 Currently Supported Sensors</a></h3>
+<ul>
+<li><strong>MPU9250</strong> : 9-axis motion tracking device (accelerometer, gyroscope, temperature) - <em>Work in Progress</em></li>
+</ul>
+<h2 id="stargazers-over-time"><a class="header" href="#stargazers-over-time">Stargazers over time</a></h2>
+<p><a href="https://starchart.cc/Vaishnav-Sabari-Girish/Hayasen"><img src="https://starchart.cc/Vaishnav-Sabari-Girish/Hayasen.svg?variant=dark" alt="Stargazers over time" /></a></p>
+<h2 id="stargazers-thank-you-for-starring-this-repository"><a class="header" href="#stargazers-thank-you-for-starring-this-repository">Stargazers (Thank you for starring this repository)</a></h2>
+<p><a href="https://github.com/Vaishnav-Sabari-Girish/Hayasen/stargazers"><img src="https://reporoster.com/stars/dark/Vaishnav-Sabari-Girish/Hayasen" alt="Stargazers repo roster for @Vaishnav-Sabari-Girish/Hayasen" /></a></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="usage"><a class="header" href="#usage">Usage</a></h1>
+<h2 id="-installation"><a class="header" href="#-installation">📦 Installation</a></h2>
+<p>Add <code>hayasen</code> to your <code>Cargo.toml</code> either by the below command or directly.</p>
+<pre><code class="language-bash"># Command Line
+cargo add hayasen --features mpu9250    #Optional for now
+</code></pre>
+<p><code>Cargo.toml</code></p>
+<pre><code class="language-toml">[dependencies]
+hayasen = { version = "*", features = ["mpu9250"] }   # For MPU9250 support
+</code></pre>
+<h2 id="-quick-start"><a class="header" href="#-quick-start">🎯 Quick Start</a></h2>
+<p>Here is a basic example of <code>hayasen</code> (Not Yet Tested on actual Hardware)</p>
+<pre><pre class="playground"><code class="language-rust">use hayasen::prelude::*;
+use embedded_hal::i2c::I2c;
+
+fn main() -&gt; Result&lt;(), Error&lt;MyI2CError&gt;&gt; {
+    // Easy initialization with default settings
+    let mut mpu = HayasenFunctions::create_mpu9250_default(i2c, 0x68)?;
+    
+    // Read sensor data
+    let acceleration = HayasenFunctions::read_accel(&amp;mut mpu)?;
+    let temperature = HayasenFunctions::read_temp_c(&amp;mut mpu)?;
+    
+    println!("Temperature: {:.1}°C", temperature);
+    println!("Acceleration: {:?} g", acceleration);
+    
+    Ok(())
+}</code></pre></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="features"><a class="header" href="#features">Features</a></h1>
+<p>This section details the key features and capabilities provided by the <code>hayasen</code> library, along with
+future development plans.</p>
+<h2 id="current-features"><a class="header" href="#current-features">Current Features</a></h2>
+<ul>
+<li><code>mpu9250</code> - Enables comprehensive support for the MPU9250 motion sensor. This includes functionalities
+for reading accelerometer, gyroscope, and magnetometer data, as well as configuration options for various
+operating modes. (Enabled by default)</li>
+</ul>
+<h2 id="future-plans"><a class="header" href="#future-plans">Future Plans</a></h2>
+<h3 id="-roadmap"><a class="header" href="#-roadmap">🔮 Roadmap</a></h3>
+<h4 id="-short-term-goals-v020---v050"><a class="header" href="#-short-term-goals-v020---v050">🎯 Short-term Goals (v0.2.0 - v0.5.0)</a></h4>
+<ul>
+<li>
+<p><input disabled="" type="checkbox"/>
+<strong>Complete MPU9250 implementation and testing</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Magnetometer support (AK8963)</li>
+<li><input disabled="" type="checkbox"/>
+Self-test functionality</li>
+<li><input disabled="" type="checkbox"/>
+Motion detection interrupts</li>
+<li><input disabled="" type="checkbox"/>
+FIFO buffer support</li>
+<li><input disabled="" type="checkbox"/>
+Comprehensive unit tests</li>
+<li><input disabled="" type="checkbox"/>
+Integration tests with hardware</li>
+</ul>
+</li>
+<li>
+<p><input disabled="" type="checkbox"/>
+<strong>Add comprehensive test suite</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Unit tests for all public APIs</li>
+<li><input disabled="" type="checkbox"/>
+Integration tests with mock I2C</li>
+<li><input disabled="" type="checkbox"/>
+Hardware-in-the-loop testing</li>
+<li><input disabled="" type="checkbox"/>
+Continuous integration setup</li>
+<li><input disabled="" type="checkbox"/>
+Code coverage reporting</li>
+</ul>
+</li>
+<li>
+<p><input disabled="" type="checkbox"/>
+<strong>Create more usage examples</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Basic sensor reading example</li>
+<li><input disabled="" type="checkbox"/>
+Interrupt-driven motion detection</li>
+<li><input disabled="" type="checkbox"/>
+Data logging application</li>
+<li><input disabled="" type="checkbox"/>
+Multi-sensor fusion example</li>
+<li><input disabled="" type="checkbox"/>
+RTOS integration examples</li>
+</ul>
+</li>
+</ul>
+<h4 id="-medium-term-goals-v060---v090"><a class="header" href="#-medium-term-goals-v060---v090">🚀 Medium-term Goals (v0.6.0 - v0.9.0)</a></h4>
+<ul>
+<li>
+<p><input disabled="" type="checkbox"/>
+<strong>Add MAX30102 heart rate sensor support</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Heart rate monitoring</li>
+<li><input disabled="" type="checkbox"/>
+Oxygen saturation (SpO2) measurement</li>
+<li><input disabled="" type="checkbox"/>
+FIFO data reading</li>
+<li><input disabled="" type="checkbox"/>
+Interrupt configuration</li>
+<li><input disabled="" type="checkbox"/>
+Temperature reading</li>
+</ul>
+</li>
+<li>
+<p><input disabled="" type="checkbox"/>
+<strong>Add CI/CD pipeline</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+GitHub Actions for testing</li>
+<li><input disabled="" type="checkbox"/>
+Automated documentation deployment</li>
+<li><input disabled="" type="checkbox"/>
+Release automation</li>
+<li><input disabled="" type="checkbox"/>
+Crate publishing automation</li>
+<li><input disabled="" type="checkbox"/>
+Cross-compilation testing</li>
+</ul>
+</li>
+</ul>
+<h4 id="-long-term-goals-v100"><a class="header" href="#-long-term-goals-v100">🌟 Long-term Goals (v1.0.0+)</a></h4>
+<ul>
+<li>
+<p><input disabled="" type="checkbox"/>
+<strong>Support for more sensor types</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+BME280 (Temperature, Humidity, Pressure)</li>
+<li><input disabled="" type="checkbox"/>
+BMP180/BMP280 (Pressure)</li>
+<li><input disabled="" type="checkbox"/>
+HMC5883L (Magnetometer)</li>
+<li><input disabled="" type="checkbox"/>
+ADXL345 (Accelerometer)</li>
+<li><input disabled="" type="checkbox"/>
+TMP36/TMP102 (Temperature)</li>
+</ul>
+</li>
+<li>
+<p><input disabled="" type="checkbox"/>
+<strong>Advanced features</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Sensor fusion algorithms</li>
+<li><input disabled="" type="checkbox"/>
+Power management utilities</li>
+<li><input disabled="" type="checkbox"/>
+Async/await support</li>
+<li><input disabled="" type="checkbox"/>
+No-alloc mode for tiny systems</li>
+<li><input disabled="" type="checkbox"/>
+WebAssembly support for simulation</li>
+</ul>
+</li>
+<li>
+<p><input disabled="" type="checkbox"/>
+<strong>Ecosystem integration</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Embassy framework support</li>
+<li><input disabled="" type="checkbox"/>
+RTIC framework integration</li>
+<li><input disabled="" type="checkbox"/>
+defmt logging support</li>
+<li><input disabled="" type="checkbox"/>
+Probe-rs debugging support</li>
+<li><input disabled="" type="checkbox"/>
+Platform-agnostic drivers</li>
+</ul>
+</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="project-structure"><a class="header" href="#project-structure">Project Structure</a></h1>
+<p>This document outlines the high-level directory and file structure of the <code>hayasen</code> project, providing an
+overview of where different components reside.</p>
+<pre><code>hayasen/
+├── src/
+│   ├── lib.rs          # Main library entry point, exposing the public API and core functionalities.
+│   ├── error.rs        # Defines a unified set of error types for consistent error handling across the library.
+│   ├── functions.rs    # Implements the function registry system, allowing dynamic management and execution of sensor-related operations.
+│   └── mpu9250.rs      # Contains the implementation for interacting with the MPU9250 inertial measurement unit (IMU) sensor.
+├── examples/           # Contains example code demonstrating how to use the `hayasen` library's features.
+└── tests/              # Houses integration and unit tests to ensure the correctness and reliability of the library.
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="contributing-to-hayasen"><a class="header" href="#contributing-to-hayasen">Contributing to Hayasen</a></h1>
+<p>Contributions are welcome for the <code>hayasen</code> project! To ensure a smooth and effective collaboration, please follow these guidelines.</p>
+<h2 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h2>
+<ol>
+<li><strong>Fork the repository:</strong> Start by forking the <code>hayasen</code> repository to your GitHub account.</li>
+<li><strong>Clone your fork:</strong> Clone your forked repository to your local machine:
+<pre><code class="language-bash">git clone https://github.com/Vaishnav-Sabari-Girish/hayasen.git
+cd hayasen
+</code></pre>
+</li>
+<li><strong>Create a new branch:</strong> For each new feature or bug fix, create a new branch:
+<pre><code class="language-bash">git checkout -b feature/your-feature-name # For new features
+git checkout -b bugfix/your-bug-name    # For bug fixes
+</code></pre>
+</li>
+</ol>
+<h2 id="code-style-guidelines-rust"><a class="header" href="#code-style-guidelines-rust">Code Style Guidelines (Rust)</a></h2>
+<p>Please adhere to the existing code style and conventions of the project, as enforced by <code>cargo fmt</code> and <code>cargo clippy</code>.</p>
+<ul>
+<li><strong>Imports:</strong> Prefer <code>use crate::module::item;</code> or <code>use super::item;</code> for internal modules. Group related imports.</li>
+<li><strong>Formatting:</strong> Adhere to <code>cargo fmt</code> standards. You can run <code>cargo fmt</code> to automatically format your code.</li>
+<li><strong>Naming Conventions:</strong>
+<ul>
+<li><code>snake_case</code> for functions, variables, and modules.</li>
+<li><code>PascalCase</code> for types (structs, enums, traits).</li>
+<li><code>SCREAMING_SNAKE_CASE</code> for constants.</li>
+</ul>
+</li>
+<li><strong>Error Handling:</strong> Utilize <code>Result</code> and <code>Option</code> types for explicit error handling. Avoid <code>unwrap()</code> and <code>expect()</code> in production code.</li>
+<li><strong>Types:</strong> Use explicit types where clarity is enhanced, otherwise let type inference work.</li>
+<li><strong>Comments:</strong> Explain <em>why</em> complex logic is implemented, not <em>what</em> it does.</li>
+</ul>
+<h2 id="development-workflow"><a class="header" href="#development-workflow">Development Workflow</a></h2>
+<h3 id="building-the-project"><a class="header" href="#building-the-project">Building the Project</a></h3>
+<ul>
+<li><strong>Build:</strong> <code>cargo build</code></li>
+<li><strong>Build (release):</strong> <code>cargo build --release</code></li>
+</ul>
+<h3 id="testing"><a class="header" href="#testing">Testing</a></h3>
+<ul>
+<li><strong>Run all tests:</strong> <code>cargo test</code></li>
+<li><strong>Run a single test:</strong> <code>cargo test -- &lt;test_name&gt;</code></li>
+</ul>
+<h3 id="linting-and-type-checking"><a class="header" href="#linting-and-type-checking">Linting and Type Checking</a></h3>
+<ul>
+<li><strong>Linting:</strong> <code>cargo clippy -- -D warnings</code></li>
+<li><strong>Check types:</strong> <code>cargo check</code></li>
+</ul>
+<h2 id="submitting-changes"><a class="header" href="#submitting-changes">Submitting Changes</a></h2>
+<ol>
+<li><strong>Commit your changes:</strong> Write clear, concise commit messages that explain the purpose of your changes.</li>
+<li><strong>Push to your fork:</strong>
+<pre><code class="language-bash">git push origin feature/your-feature-name
+</code></pre>
+</li>
+<li><strong>Create a Pull Request:</strong>
+<ul>
+<li>Go to the original <code>hayasen</code> repository on GitHub.</li>
+<li>Click on "New Pull Request".</li>
+<li>Provide a descriptive title and a detailed explanation of your changes.</li>
+<li>Ensure all tests pass and linting checks are clear.</li>
+</ul>
+</li>
+</ol>
+<p>Thank you for contributing to Hayasen!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+    </div>
+    </body>
+</html>
