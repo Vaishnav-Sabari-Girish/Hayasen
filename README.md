@@ -22,7 +22,7 @@ Add `hayasen` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-hayasen = { version = "0.1", features = ["mpu9250"] }   # For MPU9250 support
+hayasen = { version = "*", features = ["mpu9250"] }   # For MPU9250 support
 ```
 
 ## 🎯 Quick Start
