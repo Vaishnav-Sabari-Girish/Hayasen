@@ -1,7 +1,6 @@
 # Hayasen
 
 [![Crates.io](https://img.shields.io/crates/v/hayasen.svg)](https://crates.io/crates/hayasen)
-[![Docs.rs](https://docs.rs/hayasen/badge.svg)](https://docs.rs/hayasen)
 [![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE-APACHE)
 [![Minimum Supported Rust Version](https://img.shields.io/badge/MSRV-1.60.0-blue.svg)](https://rust-lang.org)
 
@@ -30,18 +29,24 @@ hayasen = { version = "0.1", features = ["mpu9250"] }   # For MPU9250 support
 
 ```rust
 use hayasen::prelude::*;
-use embedded_hal::i2c::I2c;
+use hayasen::mpu9250_hayasen;
 
-fn main() -> Result<(), Error<MyI2CError>> {
-    // Easy initialization with default settings
-    let mut mpu = HayasenFunctions::create_mpu9250_default(i2c, 0x68)?;
+fn main() -> Result<(), Error<YourI2cError>> {
+    // Setup I2C (platform-specific)
+    let i2c = setup_i2c();
     
-    // Read sensor data
-    let acceleration = HayasenFunctions::read_accel(&mut mpu)?;
-    let temperature = HayasenFunctions::read_temp_c(&mut mpu)?;
+    // Initialize sensor with default configuration
+    let mut sensor = mpu9250_hayasen::create_default(i2c, 0x68)?;
     
-    println!("Temperature: {:.1}°C", temperature);
-    println!("Acceleration: {:?} g", acceleration);
+    // Read all sensor data (temp, accel, gyro)
+    let (temperature, acceleration, angular_velocity) =
+        mpu9250_hayasen::read_all(&mut sensor)?;
+    
+    println!("Temperature: {:.2}°C", temperature);
+    println!("Acceleration: [{:.3}, {:.3}, {:.3}] g",
+             acceleration[0], acceleration[1], acceleration[2]);
+    println!("Angular Velocity: [{:.3}, {:.3}, {:.3}] dps",
+             angular_velocity[0], angular_velocity[1], angular_velocity[2]);
     
     Ok(())
 }
@@ -54,7 +59,7 @@ fn main() -> Result<(), Error<MyI2CError>> {
 
 ## 📚 Documentation
 
-- [API Documentation](https://docs.rs/hayasen) - Complete API reference
+- [API Documentation](https://vaishnav.world/Hayasen) - Complete API reference
 - [Examples](./examples/) - Practical usage examples   (Coming Soon)
 - [Contributing Guidelines](./CONTRIBUTING.md) - How to contribute to the project
 
