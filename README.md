@@ -16,6 +16,13 @@ It provides unified, type-safe interfaces for various sensors with a focus on ea
 
 - **MPU9250** - 9-axis motion tracking device (accelerometer, gyroscope, temperature) - *Work in Progress*
 
+
+## Progress 
+
+Click here to check the current progress of the library
+
+[Progress](./progress.md)
+
 ## 📦 Installation
 
 Add `hayasen` to your `Cargo.toml`:
