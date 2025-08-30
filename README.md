@@ -67,7 +67,7 @@ fn main() -> Result<(), Error<YourI2cError>> {
 ## 📚 Documentation
 
 - [API Documentation](https://vaishnav.world/Hayasen) - Complete API reference
-- [Examples](./examples/) - Practical usage examples   (Coming Soon)
+- [Examples](./examples/README.md) - Practical usage examples   (Coming Soon)
 - [Contributing Guidelines](./CONTRIBUTING.md) - How to contribute to the project
 
 ## 🏗️ Project Structure
