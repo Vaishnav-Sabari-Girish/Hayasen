@@ -2,8 +2,8 @@
 use embedded_hal::i2c::I2c;
 use crate::error::Error;
 
-const WHO_AM_I: u8 = 0x75;
-const WHO_AM_I_VALUE: u8 = 0x71;
+const WHO_AM_I: u8 = 0x74;
+const WHO_AM_I_VALUE: u8 = 0x74;
 const PWR_MGMT_1: u8 = 0x6B;
 const ACCEL_CONFIG: u8 = 0x1C;
 const GYRO_CONFIG: u8 = 0x1B;
