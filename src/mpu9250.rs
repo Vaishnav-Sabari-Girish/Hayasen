@@ -61,8 +61,7 @@ where
 
     pub fn verify_identity(&mut self) -> Result<(), Error<E>> {
         let mut buffer = [0u8];
-        self.i2c.write(self.address, &[WHO_AM_I])?;
-        self.i2c.read(self.address, &mut buffer)?;
+        self.i2c.write_read(self.address, &[WHO_AM_I], &mut buffer)?;
         if buffer[0] != WHO_AM_I_VALUE {
             return Err(Error::NotDetected);
         }
@@ -109,8 +108,7 @@ where
     
     pub fn read_accel_raw(&mut self) -> Result<[i16; 3], Error<E>> {
         let mut buffer = [0u8; 6];
-        self.i2c.write(self.address, &[ACCEL_XOUT_H])?;
-        self.i2c.read(self.address, &mut buffer)?;
+        self.i2c.write_read(self.address, &[ACCEL_XOUT_H], &mut buffer)?;
         let x = ((buffer[0] as i16) << 8) | buffer[1] as i16;
         let y = ((buffer[2] as i16) << 8) | buffer[3] as i16;
         let z = ((buffer[4] as i16) << 8) | buffer[5] as i16;
@@ -119,8 +117,7 @@ where
 
     pub fn read_gyro_raw(&mut self) -> Result<[i16; 3], Error<E>> {
         let mut buffer = [0u8; 6];
-        self.i2c.write(self.address, &[GYRO_XOUT_H])?;
-        self.i2c.read(self.address, &mut buffer)?;
+        self.i2c.write_read(self.address, &[GYRO_XOUT_H], &mut buffer)?;
         let x = ((buffer[0] as i16) << 8) | buffer[1] as i16;
         let y = ((buffer[2] as i16) << 8) | buffer[3] as i16;
         let z = ((buffer[4] as i16) << 8) | buffer[5] as i16;
@@ -129,8 +126,7 @@ where
 
     pub fn read_temp_raw(&mut self) -> Result<i16, Error<E>> {
         let mut buffer = [0u8; 2];
-        self.i2c.write(self.address, &[TEMP_OUT_H])?;
-        self.i2c.read(self.address, &mut buffer)?;
+        self.i2c.write_read(self.address, &[TEMP_OUT_H], &mut buffer)?;
         let temp = ((buffer[0] as i16) << 8) | buffer[1] as i16;
         Ok(temp)
     }
