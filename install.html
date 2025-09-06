@@ -200,21 +200,19 @@
 <h3 id="option-a-using-cargotoml"><a class="header" href="#option-a-using-cargotoml">Option A: Using <code>Cargo.toml</code></a></h3>
 <p>Add the following line to your project's <code>Cargo.toml</code> under <code>[dependencies]</code>:</p>
 <pre><code class="language-toml">[dependencies]
-hayasen = { git = "https://github.com/Vaishnav-Sabari-Girish/Hayasen" }
+hayasen = "*"
 </code></pre>
 <h3 id="option-b-using-cargo-add"><a class="header" href="#option-b-using-cargo-add">Option B: Using <code>cargo add</code></a></h3>
 <p>You can add Hayasen directly via Cargo command:</p>
-<pre><code class="language-bash">cargo add --git https://github.com/Vaishnav-Sabari-Girish/Hayasen
+<pre><code class="language-bash">cargo add hayasen
 </code></pre>
 <p>This ensures that your project is always linked to the latest version of the crate.</p>
-<hr />
-<h2 id="3-building-documentation-optional-but-recommended"><a class="header" href="#3-building-documentation-optional-but-recommended">3. Building Documentation (Optional but Recommended)</a></h2>
-<p>To view the crate's documentation locally:</p>
-<pre><code class="language-bash">cargo doc --open
+<p>Plans include adding each sensor as a feature to reduce overhead. It has already been implemented for the MPU9250.</p>
+<p>Therefore your full command is</p>
+<pre><code class="language-bash">cargo add hayasen --features mpu9250
 </code></pre>
-<p>This command builds and opens the documentation in your browser.</p>
 <hr />
-<h2 id="4-example-environment-setup"><a class="header" href="#4-example-environment-setup">4. Example Environment Setup</a></h2>
+<h2 id="3-example-environment-setup"><a class="header" href="#3-example-environment-setup">3. Example Environment Setup</a></h2>
 <p>A minimal <code>Cargo.toml</code> for a project using Hayasen might look like:</p>
 <pre><code class="language-toml">[package]
 name = "sensor_app"
@@ -222,11 +220,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-hayasen = { git = "https://github.com/Vaishnav-Sabari-Girish/Hayasen" }
+hayasen = "*"
 embedded-hal = "0.2"
 </code></pre>
 <hr />
-<h2 id="5-verifying-installation"><a class="header" href="#5-verifying-installation">5. Verifying Installation</a></h2>
+<h2 id="4-verifying-installation"><a class="header" href="#4-verifying-installation">4. Verifying Installation</a></h2>
 <p>Run a test build to ensure everything is set up correctly:</p>
 <pre><code class="language-bash">cargo build --target thumbv7em-none-eabihf
 </code></pre>
