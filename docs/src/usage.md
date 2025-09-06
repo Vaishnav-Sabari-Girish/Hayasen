@@ -4,11 +4,6 @@
 
 The Hayasen MPU9250 library provides a comprehensive interface for working with the MPU9250 9-axis motion tracking device. This guide demonstrates how to use the library in various scenarios, from basic sensor reading to advanced configuration.
 
-```admonish note title="Please Note", collapsible=false
-Please note that the I2C instance used here currently is of datatype `TWIM` which corresponds to the I2C instance of a nRF Nordic microcontroller.
-So basically `hayasen` currently only supports Nordic Microcontrollers
-```
-
 ## Basic Usage
 
 ### Quick Start with Default Configuration
@@ -63,36 +58,6 @@ fn read_individual_sensors() -> Result<(), Error<YourI2cError>> {
     // Read temperature only
     let temp = mpu9250_hayasen::read_temperature(&mut sensor)?;
     println!("Temperature: {:.2}°C", temp);
-    
-    Ok(())
-}
-```
-
-## Advanced Configuration
-
-### Manual Sensor Setup
-
-For more control over sensor configuration, use the direct API:
-
-```rust
-use hayasen::prelude::*;
-
-fn advanced_setup() -> Result<(), Error<YourI2cError>> {
-    let i2c = setup_i2c();
-    let mut sensor = Mpu9250::new(i2c, 0x68);
-    
-    // Manual initialization with custom ranges
-    sensor.initialize_sensor(
-        AccelRange::Range8G,      // Higher acceleration range
-        GyroRange::Range1000Dps   // Higher angular velocity range
-    )?;
-    
-    // Configure sample rate (divider from 1kHz base rate)
-    // Sample rate = 1000Hz / (1 + divider)
-    sensor.set_sample_rate(9)?; // 100Hz sample rate
-    
-    // Configure digital low-pass filter
-    sensor.set_dlpf_config(DlpfConfig::Bandwidth184Hz)?;
     
     Ok(())
 }
@@ -357,7 +322,8 @@ fn classify_errors(error: Error<YourI2cError>) {
 
 ## Platform-Specific Examples
 
-### ESP32 Example (using esp-hal)
+<details>
+<summary>ESP32 Example (using esp-hal)</summary>
 
 ```rust
 #![no_std]
@@ -412,156 +378,7 @@ fn main() -> ! {
 }
 ```
 
-### STM32 Example (using stm32f4xx-hal)
-
-```rust
-#![no_std]
-#![no_main]
-
-use panic_halt as _;
-use cortex_m_rt::entry;
-use stm32f4xx_hal::{
-    pac,
-    prelude::*,
-    i2c::I2c,
-};
-use hayasen::prelude::*;
-
-#[entry]
-fn main() -> ! {
-    let dp = pac::Peripherals::take().unwrap();
-    let cp = cortex_m::peripheral::Peripherals::take().unwrap();
-    
-    let rcc = dp.RCC.constrain();
-    let clocks = rcc.cfgr.freeze();
-    
-    let gpiob = dp.GPIOB.split();
-    let scl = gpiob.pb8.into_alternate_open_drain();
-    let sda = gpiob.pb9.into_alternate_open_drain();
-    
-    let i2c = I2c::new(dp.I2C1, (scl, sda), 400.kHz(), &clocks);
-    
-    let mut delay = cortex_m::delay::Delay::new(cp.SYST, clocks.hclk().to_Hz());
-    let mut sensor = Mpu9250::new(i2c, 0x68);
-    
-    // Custom initialization
-    match sensor.initialize_sensor(AccelRange::Range4G, GyroRange::Range500Dps) {
-        Ok(_) => {},
-        Err(_) => loop { delay.delay_ms(1000u32); }
-    }
-    
-    loop {
-        if let Ok(accel) = sensor.read_acceleration() {
-            // Process acceleration data
-            process_motion_data(accel);
-        }
-        delay.delay_ms(50u32);
-    }
-}
-```
-
-## Advanced Use Cases
-
-### Calibration and Offset Correction
-
-```rust
-use hayasen::prelude::*;
-
-fn calibrate_sensor() -> Result<[f32; 6], Error<YourI2cError>> {
-    let i2c = setup_i2c();
-    let mut sensor = Mpu9250::new(i2c, 0x68);
-    sensor.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
-    
-    println!("Keep sensor stationary for calibration...");
-    delay_ms(2000);
-    
-    let mut accel_offsets = [0.0f32; 3];
-    let mut gyro_offsets = [0.0f32; 3];
-    const SAMPLES: usize = 100;
-    
-    // Collect calibration samples
-    for _ in 0..SAMPLES {
-        let accel = sensor.read_acceleration()?;
-        let gyro = sensor.read_angular_velocity()?;
-        
-        accel_offsets[0] += accel[0];
-        accel_offsets[1] += accel[1];
-        accel_offsets[2] += accel[2] - 1.0; // Subtract expected 1g on Z-axis
-        
-        gyro_offsets[0] += gyro[0];
-        gyro_offsets[1] += gyro[1];
-        gyro_offsets[2] += gyro[2];
-        
-        delay_ms(10);
-    }
-    
-    // Calculate averages
-    for i in 0..3 {
-        accel_offsets[i] /= SAMPLES as f32;
-        gyro_offsets[i] /= SAMPLES as f32;
-    }
-    
-    println!("Calibration complete!");
-    println!("Accel offsets: [{:.4}, {:.4}, {:.4}]", accel_offsets[0], accel_offsets[1], accel_offsets[2]);
-    println!("Gyro offsets: [{:.4}, {:.4}, {:.4}]", gyro_offsets[0], gyro_offsets[1], gyro_offsets[2]);
-    
-    Ok([accel_offsets[0], accel_offsets[1], accel_offsets[2], 
-        gyro_offsets[0], gyro_offsets[1], gyro_offsets[2]])
-}
-```
-
-### Orientation Estimation
-
-```rust
-use hayasen::prelude::*;
-
-fn estimate_orientation() -> Result<(), Error<YourI2cError>> {
-    let i2c = setup_i2c();
-    let mut sensor = Mpu9250::new(i2c, 0x68);
-    sensor.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
-    
-    loop {
-        let accel = sensor.read_acceleration()?;
-        
-        // Calculate roll and pitch from accelerometer (when stationary)
-        let roll = accel[1].atan2(accel[2]) * 180.0 / core::f32::consts::PI;
-        let pitch = (-accel[0]).atan2((accel[1].powi(2) + accel[2].powi(2)).sqrt()) 
-                   * 180.0 / core::f32::consts::PI;
-        
-        println!("Roll: {:.2}°, Pitch: {:.2}°", roll, pitch);
-        
-        delay_ms(100);
-    }
-}
-```
-
-### Multi-Sensor Setup
-
-```rust
-use hayasen::prelude::*;
-
-fn multiple_sensors_example() -> Result<(), Error<YourI2cError>> {
-    let i2c = setup_i2c();
-    
-    // MPU9250 can have two possible I2C addresses
-    let mut sensor1 = Mpu9250::new(i2c, 0x68); // AD0 = LOW
-    let mut sensor2 = Mpu9250::new(i2c, 0x69); // AD0 = HIGH
-    
-    // Initialize both sensors
-    sensor1.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
-    sensor2.initialize_sensor(AccelRange::Range2G, GyroRange::Range250Dps)?;
-    
-    loop {
-        let accel1 = sensor1.read_acceleration()?;
-        let accel2 = sensor2.read_acceleration()?;
-        
-        println!("Sensor 1: [{:.3}, {:.3}, {:.3}]g", accel1[0], accel1[1], accel1[2]);
-        println!("Sensor 2: [{:.3}, {:.3}, {:.3}]g", accel2[0], accel2[1], accel2[2]);
-        
-        delay_ms(100);
-    }
-}
-```
+</details>
 
 ## Best Practices
 
@@ -648,6 +465,3 @@ fn debug_sensor_status(sensor: &mut Mpu9250<impl I2c>) -> Result<(), Error<impl 
 }
 ```
 
-This documentation provides comprehensive examples for using the MPU9250 library across different scenarios
-and platforms. The examples progress from simple usage to advanced applications, helping developers implement
-motion sensing in their embedded projects effectively.

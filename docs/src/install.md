@@ -27,7 +27,7 @@ Add the following line to your project's `Cargo.toml` under `[dependencies]`:
 
 ```toml
 [dependencies]
-hayasen = { git = "https://github.com/Vaishnav-Sabari-Girish/Hayasen" }
+hayasen = "*"
 ```
 
 ### Option B: Using `cargo add`
@@ -35,26 +35,22 @@ hayasen = { git = "https://github.com/Vaishnav-Sabari-Girish/Hayasen" }
 You can add Hayasen directly via Cargo command:
 
 ```bash
-cargo add --git https://github.com/Vaishnav-Sabari-Girish/Hayasen
+cargo add hayasen
 ```
 
 This ensures that your project is always linked to the latest version of the crate.
 
----
+Plans include adding each sensor as a feature to reduce overhead. It has already been implemented for the MPU9250. 
 
-## 3. Building Documentation (Optional but Recommended)
-
-To view the crate's documentation locally:
+Therefore your full command is
 
 ```bash
-cargo doc --open
+cargo add hayasen --features mpu9250
 ```
-
-This command builds and opens the documentation in your browser.
 
 ---
 
-## 4. Example Environment Setup
+## 3. Example Environment Setup
 
 A minimal `Cargo.toml` for a project using Hayasen might look like:
 
@@ -65,13 +61,13 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-hayasen = { git = "https://github.com/Vaishnav-Sabari-Girish/Hayasen" }
+hayasen = "*"
 embedded-hal = "0.2"
 ```
 
 ---
 
-## 5. Verifying Installation
+## 4. Verifying Installation
 
 Run a test build to ensure everything is set up correctly:
 
