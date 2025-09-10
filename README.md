@@ -1,5 +1,6 @@
-![logo](./hayasen_logo.png)
-
+<p align="center">
+  <img src="./hayasen_logo.png" alt="Sublime's custom image"/>
+</p>
 
 # Hayasen
 
