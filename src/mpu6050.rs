@@ -1,19 +1,28 @@
 #[cfg(feature = "mpu6050")]
 use embedded_hal::i2c::I2c;
+
+#[cfg(feature = "mpu6050")]
 use crate::error::Error;
 
-const WHO_AM_I: u8 = 0x75;
-//const WHO_AM_I_VALUE: u8 = 0x68; // Changed from 0x74 for MPU6050
-const PWR_MGMT_1: u8 = 0x6B;
-const ACCEL_CONFIG: u8 = 0x1C;
-const GYRO_CONFIG: u8 = 0x1B;
-const ACCEL_XOUT_H: u8 = 0x3B;
-const TEMP_OUT_H: u8 = 0x41;
-const GYRO_XOUT_H: u8 = 0x43;
-const SMPRT_DIV: u8 = 0x19;
-const CONFIG: u8 = 0x1A;
+#[cfg(feature = "mpu6050")]
+mod registers {
+    pub const WHO_AM_I: u8 = 0x75;
+    //pub const WHO_AM_I_VALUE: u8 = 0x68; // Changed from 0x74 for MPU6050
+    pub const PWR_MGMT_1: u8 = 0x6B;
+    pub const ACCEL_CONFIG: u8 = 0x1C;
+    pub const GYRO_CONFIG: u8 = 0x1B;
+    pub const ACCEL_XOUT_H: u8 = 0x3B;
+    pub const TEMP_OUT_H: u8 = 0x41;
+    pub const GYRO_XOUT_H: u8 = 0x43;
+    pub const SMPRT_DIV: u8 = 0x19;
+    pub const CONFIG: u8 = 0x1A;
+}
+
+#[cfg(feature = "mpu6050")]
+use registers::*;
 
 #[cfg_attr(docsrs, doc(cfg(feature = "mpu6050")))]
+#[cfg(feature = "mpu6050")]
 pub struct Mpu6050<I2C> {
     i2c: I2C,
     address: u8,
@@ -51,6 +60,7 @@ pub enum DlpfConfig {
     Bandwidth5Hz,
 }
 
+#[cfg(feature = "mpu6050")]
 impl<I2C, E> Mpu6050<I2C>
 where 
     I2C: I2c<Error = E>
@@ -77,7 +87,7 @@ where
     pub fn configure_power(&mut self) -> Result<(), Error<E>> {
         // Reset device first, then set clock source to PLL with X axis gyroscope reference
         self.i2c.write(self.address, &[PWR_MGMT_1, 0x80])?; // Reset
-        // Small delay would be needed here in real implementation
+                                                            // Small delay would be needed here in real implementation
         let config = 0x01; // Clock source: PLL with X axis gyroscope reference
         self.i2c.write(self.address, &[PWR_MGMT_1, config])?;
         Ok(())
@@ -114,7 +124,7 @@ where
         self.setup_gyroscope(gyro_range)?;
         Ok(())
     }
-    
+
     pub fn read_accel_raw(&mut self) -> Result<[i16; 3], Error<E>> {
         let mut buffer = [0u8; 6];
         self.i2c.write_read(self.address, &[ACCEL_XOUT_H], &mut buffer)?;
@@ -201,7 +211,7 @@ where
     }
 
     // Additional MPU6050-specific methods
-    
+
     pub fn disable_sleep(&mut self) -> Result<(), Error<E>> {
         // Explicitly disable sleep mode - useful during initialization
         self.i2c.write(self.address, &[PWR_MGMT_1, 0x00])?;
