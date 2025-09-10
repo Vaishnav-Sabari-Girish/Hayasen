@@ -112,22 +112,17 @@ Found a bug or have a feature request? Please open an [issue](https://github.com
 
 - [ ] **Complete MPU9250 implementation and testing**
   - [ ] Magnetometer support (AK8963)
-  - [ ] Self-test functionality
-  - [ ] Motion detection interrupts
-  - [ ] FIFO buffer support
-  - [ ] Comprehensive unit tests
-  - [ ] Integration tests with hardware
+  - [x] Integration tests with hardware
 
 - [ ] **Add comprehensive test suite**
   - [ ] Unit tests for all public APIs
-  - [ ] Integration tests with mock I2C
-  - [ ] Hardware-in-the-loop testing
-  - [ ] Continuous integration setup
+  - [x] Integration tests with mock I2C
+  - [x] Hardware-in-the-loop testing
+  - [x] Continuous integration setup
   - [ ] Code coverage reporting
 
 - [ ] **Create more usage examples**
-  - [ ] Basic sensor reading example
-  - [ ] Interrupt-driven motion detection
+  - [x] Basic sensor reading example
   - [ ] Data logging application
   - [ ] Multi-sensor fusion example
   - [ ] RTOS integration examples
