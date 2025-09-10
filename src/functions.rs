@@ -3,6 +3,11 @@ pub mod mpu9250 {
     pub use crate::mpu9250::*;
 }
 
+#[cfg(feature = "mpu6050")]
+pub mod mpu6050 {
+    pub use crate::mpu6050::*;
+}
+
 use embedded_hal::i2c::I2c;
 use crate::error::Error;
 
@@ -26,10 +31,37 @@ pub struct MPU9250Functions<I2C, E> {
     pub wake_up: fn(&mut mpu9250::Mpu9250<I2C>) -> Result<(), Error<E>>,
 }
 
+#[cfg(feature = "mpu6050")]
+#[cfg_attr(docsrs, doc(cfg(feature = "mpu6050")))]
+pub struct MPU6050Functions<I2C, E> {
+    pub verify_identity: fn(&mut mpu6050::Mpu6050<I2C>) -> Result<(), Error<E>>,
+    pub configure_power: fn(&mut mpu6050::Mpu6050<I2C>) -> Result<(), Error<E>>,
+    pub setup_accelerometer: fn(&mut mpu6050::Mpu6050<I2C>, mpu6050::AccelRange) -> Result<(), Error<E>>,
+    pub setup_gyroscope: fn(&mut mpu6050::Mpu6050<I2C>, mpu6050::GyroRange) -> Result<(), Error<E>>,
+    pub initialize_sensor: fn(&mut mpu6050::Mpu6050<I2C>, mpu6050::AccelRange, mpu6050::GyroRange) -> Result<(), Error<E>>,
+    pub read_accel_raw: fn(&mut mpu6050::Mpu6050<I2C>) -> Result<[i16; 3], Error<E>>,
+    pub read_gyro_raw: fn(&mut mpu6050::Mpu6050<I2C>) -> Result<[i16; 3], Error<E>>,
+    pub read_temp_raw: fn(&mut mpu6050::Mpu6050<I2C>) -> Result<i16, Error<E>>,
+    pub read_acceleration: fn(&mut mpu6050::Mpu6050<I2C>) -> Result<[f32; 3], Error<E>>,
+    pub read_angular_velocity: fn(&mut mpu6050::Mpu6050<I2C>) -> Result<[f32; 3], Error<E>>,
+    pub read_temperature_celsius: fn(&mut mpu6050::Mpu6050<I2C>) -> Result<f32, Error<E>>,
+    pub set_sample_rate: fn(&mut mpu6050::Mpu6050<I2C>, u8) -> Result<(), Error<E>>,
+    pub set_dlpf_config: fn(&mut mpu6050::Mpu6050<I2C>, mpu6050::DlpfConfig) -> Result<(), Error<E>>,
+    pub enter_sleep_mode: fn(&mut mpu6050::Mpu6050<I2C>) -> Result<(), Error<E>>,
+    pub wake_up: fn(&mut mpu6050::Mpu6050<I2C>) -> Result<(), Error<E>>,
+    pub disable_sleep: fn(&mut mpu6050::Mpu6050<I2C>) -> Result<(), Error<E>>,
+    pub enable_temperature_sensor: fn(&mut mpu6050::Mpu6050<I2C>) -> Result<(), Error<E>>,
+    pub disable_temperature_sensor: fn(&mut mpu6050::Mpu6050<I2C>) -> Result<(), Error<E>>,
+}
+
 pub struct HayasenFunctions<I2C, E> {
     #[cfg(feature = "mpu9250")]
     #[cfg_attr(docsrs, doc(cfg(feature = "mpu9250")))]
     pub mpu9250: MPU9250Functions<I2C, E>,
+    
+    #[cfg(feature = "mpu6050")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "mpu6050")))]
+    pub mpu6050: MPU6050Functions<I2C, E>,
 }
 
 impl<I2C, E> HayasenFunctions<I2C, E> 
@@ -55,6 +87,28 @@ where
                 set_dlpf_config: mpu9250::Mpu9250::set_dlpf_config,
                 enter_sleep_mode: mpu9250::Mpu9250::enter_sleep_mode,
                 wake_up: mpu9250::Mpu9250::wake_up,
+            },
+            
+            #[cfg(feature = "mpu6050")]
+            mpu6050: MPU6050Functions {
+                verify_identity: mpu6050::Mpu6050::verify_identity,
+                configure_power: mpu6050::Mpu6050::configure_power,
+                setup_accelerometer: mpu6050::Mpu6050::setup_accelerometer,
+                setup_gyroscope: mpu6050::Mpu6050::setup_gyroscope,
+                initialize_sensor: mpu6050::Mpu6050::initialize_sensor,
+                read_accel_raw: mpu6050::Mpu6050::read_accel_raw,
+                read_gyro_raw: mpu6050::Mpu6050::read_gyro_raw,
+                read_temp_raw: mpu6050::Mpu6050::read_temp_raw,
+                read_acceleration: mpu6050::Mpu6050::read_acceleration,
+                read_angular_velocity: mpu6050::Mpu6050::read_angular_velocity,
+                read_temperature_celsius: mpu6050::Mpu6050::read_temperature_celsius,
+                set_sample_rate: mpu6050::Mpu6050::set_sample_rate,
+                set_dlpf_config: mpu6050::Mpu6050::set_dlpf_config,
+                enter_sleep_mode: mpu6050::Mpu6050::enter_sleep_mode,
+                wake_up: mpu6050::Mpu6050::wake_up,
+                disable_sleep: mpu6050::Mpu6050::disable_sleep,
+                enable_temperature_sensor: mpu6050::Mpu6050::enable_temperature_sensor,
+                disable_temperature_sensor: mpu6050::Mpu6050::disable_temperature_sensor,
             }
         }
     }
