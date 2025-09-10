@@ -3,7 +3,7 @@ use embedded_hal::i2c::I2c;
 use crate::error::Error;
 
 const WHO_AM_I: u8 = 0x75;
-const WHO_AM_I_VALUE: u8 = 0x68; // Changed from 0x74 for MPU6050
+//const WHO_AM_I_VALUE: u8 = 0x68; // Changed from 0x74 for MPU6050
 const PWR_MGMT_1: u8 = 0x6B;
 const ACCEL_CONFIG: u8 = 0x1C;
 const GYRO_CONFIG: u8 = 0x1B;
@@ -67,10 +67,11 @@ where
     pub fn verify_identity(&mut self) -> Result<(), Error<E>> {
         let mut buffer = [0u8];
         self.i2c.write_read(self.address, &[WHO_AM_I], &mut buffer)?;
-        if buffer[0] != WHO_AM_I_VALUE {
-            return Err(Error::NotDetected);
+
+        match buffer[0] {
+            0x68 | 0x69 | 0x70 | 0x98 => Ok(()),
+            _ => Err(Error::NotDetected)
         }
-        Ok(())
     }
 
     pub fn configure_power(&mut self) -> Result<(), Error<E>> {

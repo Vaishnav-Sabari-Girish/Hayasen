@@ -14,7 +14,8 @@ It provides unified, type-safe interfaces for various sensors with a focus on ea
 
 ## 🚀 Currently Supported Sensors
 
-- **MPU9250** - 9-axis motion tracking device (accelerometer, gyroscope, temperature) - *Work in Progress*
+- **MPU9250** - 9-axis Inertial Measurement Unit (accelerometer, gyroscope, temperature, magnetometer) - *Work in Progress*
+- **MPU6050** - 6-axis Inertial Measurement Unit (accelerometer, gyroscope, temperature)
 
 
 ## Progress 
@@ -61,7 +62,8 @@ fn main() -> Result<(), Error<YourI2cError>> {
 
 ## 🔧 Features
 
-- `mpu9250` - Enables MPU9250 motion sensor support (enabled by default)
+- `mpu9250` - Enables MPU9250 Inertial Measurement Unit support (enabled by default)
+- `mpu6050` - Enables MPU6050 Inertial Measurement Unit support 
 - More sensors coming soon!
 
 ## 📚 Documentation
