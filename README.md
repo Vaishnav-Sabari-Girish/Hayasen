@@ -84,7 +84,7 @@ hayasen/
 │   ├── lib.rs          # Main library entry point
 │   ├── error.rs        # Unified error types
 │   ├── functions.rs    # Function registry system
-│   └── mpu9250.rs      # MPU9250 sensor implementation
+│   ├── mpu9250.rs      # MPU9250 sensor implementation
 │   └── mpu6050.rs      # MPU6050 sensor implementation
 ├── examples/           # Usage examples
 └── tests/              # Integration tests
