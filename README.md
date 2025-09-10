@@ -1,3 +1,6 @@
+![logo](./hayasen_logo.png)
+
+
 # Hayasen
 
 [![Crates.io](https://img.shields.io/crates/v/hayasen.svg)](https://crates.io/crates/hayasen)
