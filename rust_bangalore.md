@@ -57,7 +57,7 @@ fn main() {
 
 1. `hayasen` is an Embedded Rust library that supports multiple sensors for Embedded Systems.
 2. It provides a type-safe and unified API to interact with various sensors.
-3. Currently supports **MPU9250** and **MPU6050** IMU's.
+3. Currently supports **MPU9250** and **MPU6050** IMU's. (Only I2C)
 4. Support for more sensors on the way.
 
 ## Links
@@ -130,6 +130,7 @@ graph TD
 cargo add hayasen --features mpu6050 # OR mpu9250
 ```
 
+<!--new_lines: 1-->
 
 ## Adding it to `Cargo.toml`
 
@@ -140,13 +141,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-cortex-m = "0.7.7"
-cortex-m-rt = "0.7.5"
 embedded-hal = "1.0.0"
 hayasen = { version = "0.0.8" , features = ["mpu6050"] }   # OR mpu9250
-nrf52840-hal = { version = "0.18.0", features = ["rt"] }
-panic-rtt-target = "0.2.0"
-rtt-target = "0.6.1"
 ```
 
 <!--end_slide-->
