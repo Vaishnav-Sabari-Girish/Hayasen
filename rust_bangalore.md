@@ -18,7 +18,7 @@ author : Vaishnav Sabari Girish
 <!--column: 0--> 
 
 <!--new_lines: 5-->
-![image:width:100%](./me.png)
+![image:width:100%](./assets/me.png)
 
 <!--column: 1-->
 
@@ -51,7 +51,7 @@ fn main() {
 
 ---
 
-![image:width:30%](./logo_no_bg.png)
+![image:width:30%](./assets/logo_no_bg.png)
 
 --- 
 
@@ -122,6 +122,19 @@ graph TD
 
 <!--end_slide-->
 
+# Progress of the `hayasen` library
+
+<!--new_lines: 2-->
+<!--alignment: center-->
+
+| Sensor Tested | Boards Used |
+| -------------- | --------------- |
+| MPU9250 inertial measurement unit | Glyph C6 |
+| MPU6050 inertial measurement unit | Nordic nRF52840 Development Kit |
+
+
+<!--end_slide-->
+
 # Usage - 1
 
 ## Adding the library using `cargo add`
@@ -151,7 +164,7 @@ hayasen = { version = "0.0.8" , features = ["mpu6050"] }   # OR mpu9250
 
 ## Example program (Generic) for MPU9250
 
-```rust
+```rust {1|3|5,8|11,12|14-18|20|all}
 use hayasen::mpu9250_hayasen;
 
 fn main() -> Result<(), Error<YourI2cError>> {
@@ -218,4 +231,53 @@ The below points explain why I have used Rust to create `hayasen`
 
 <!--end_slide-->
 
-![image:width:100%](./ty.png)
+# Contributing
+
+## How to add a new sensor driver
+
+1. Fork `Vaishnav-Sabari-Gir`ish/Hayasen` and `Vaishnav-Sabari-Girish/Hayasen-Examples`.
+
+<!--new_lines: 1-->
+2. Add you sensor driver file inside the `src/` directory and name it as `<sensor>.rs`.
+
+<!--new_lines: 1-->
+3. Add all the functions as function pointers in the `src/function.rs` file.
+
+<!--new_lines: 1-->
+4. Then add the function pointers as functions in `src/lib.rs` file. 
+
+<!--new_lines: 1-->
+5. Test it and add your test case to the `examples/` directory.
+
+<!--new_lines: 1-->
+6. Push to both fork remotes (**NOT** the upstream repos).
+
+<!--new_lines: 1-->
+7. Open a PR for both repos.
+
+<!--end_slide-->
+# Live Demo
+
+## Hardware Used :
+
+<!--column_layout: [1, 1]-->
+<!--column: 0-->
+### Glyph C6 (ESP32 C6 Mini)
+
+This is a WiFi/Zigbee enabled ESP32C6 dev board built by [](https://shop.pcbcupid.com)
+<!--new_lines: 1-->
+
+![image:width:100%](./assets/glyph.jpg)
+
+<!--column: 1-->
+
+
+### MPU9250 9-axis Inertial Measurement Unit
+
+This is a 9-Axis IMU that can measure Aceleration (3-axis), Angular Velocity (3-axis) and Magnetic field (3-axis magnetometer)
+
+![image:width:70%](./assets/mpu9250.jpg)
+
+<!--end_slide-->
+
+![image:width:100%](./assets/ty.png)
