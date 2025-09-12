@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-presenterm -x ./rust_bangalore.md
+presenterm --config-file ./config/presenterm.yml ./rust_bangalore.md

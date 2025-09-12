@@ -291,7 +291,6 @@ This is a 9-Axis IMU that can measure Aceleration (3-axis), Angular Velocity (3-
 
 # All my links
 
-<!--new_lines: 1-->
 1. **GitHub** : [](https://github.com/Vaishnav-Sabari-Girish)
 <!--new_lines: 1-->
 2. Linkedin: [](https://www.linkedin.com/in/vaishnav-sabari-girish/)
