@@ -169,6 +169,7 @@ hayasen = { version = "0.0.8" , features = ["mpu6050"] }   # OR mpu9250
 
 ## Example program (Generic) for MPU9250
 
+
 ```rust {1|3|5,8|11,12|14-18|20|all}
 use hayasen::mpu9250_hayasen;   //Import the mpu9250_hayasen function
 
