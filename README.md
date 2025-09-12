@@ -195,3 +195,10 @@ timeline
 ### Stargazers
 
 [![Stargazers repo roster for @Vaishnav-Sabari-Girish/Hayasen](https://reporoster.com/stars/dark/Vaishnav-Sabari-Girish/Hayasen)](https://github.com/Vaishnav-Sabari-Girish/Hayasen/stargazers)
+
+### Contributors 
+
+<a href="https://github.com/Vaishnav-Sabari-Girish/Hayasen/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Vaishnav-Sabari-Girish/Hayasen" />
+</a>
+
