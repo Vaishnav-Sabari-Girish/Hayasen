@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./ppt/assets/hayasen_logo.png" alt="Sublime's custom image"/>
+  <img src="./assets/hayasen_logo.png" alt="Sublime's custom image"/>
 </p>
 
 # Hayasen
