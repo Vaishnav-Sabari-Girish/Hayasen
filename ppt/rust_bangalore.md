@@ -103,7 +103,7 @@ mpu6050 = []
 # Project `src/` directory
 
 ```bash +exec
-tree src/
+tree ../src/
 ```
 
 <!--end_slide-->
@@ -117,7 +117,8 @@ graph TD
     lib_file(["`lib.rs`" file])
     error_file(["`error.rs`" file])
     driver_file --Function Pointers--> functions_file --> lib_file
-    driver_file <--> error_file
+    driver_file --Custom errors defined--> error_file
+    error_file --> lib_file
 ```
 
 <!--end_slide-->
@@ -135,7 +136,7 @@ graph TD
 
 <!--end_slide-->
 
-# Usage - 1
+# Getting Started
 
 ## Adding the library using `cargo add`
 
@@ -145,6 +146,10 @@ cargo add hayasen --features mpu6050 # OR mpu9250
 
 <!--new_lines: 1-->
 
+<!--alignment: center-->
+**OR**
+
+<!--alignment: left-->
 ## Adding it to `Cargo.toml`
 
 ```toml
@@ -160,12 +165,12 @@ hayasen = { version = "0.0.8" , features = ["mpu6050"] }   # OR mpu9250
 
 <!--end_slide-->
 
-# Usage - 2 
+# Usage in program
 
 ## Example program (Generic) for MPU9250
 
 ```rust {1|3|5,8|11,12|14-18|20|all}
-use hayasen::mpu9250_hayasen;
+use hayasen::mpu9250_hayasen;   //Import the mpu9250_hayasen functtion
 
 fn main() -> Result<(), Error<YourI2cError>> {
     // Setup I2C (platform-specific)
@@ -194,7 +199,7 @@ fn main() -> Result<(), Error<YourI2cError>> {
 
 ## MPU9250
 
-![image:width:100%](./examples/MPU9250/basic_mpu9250/basic_mpu9250.gif)
+![image:width:100%](../examples/MPU9250/basic_mpu9250/basic_mpu9250.gif)
 
 <!--end_slide-->
 
@@ -202,7 +207,7 @@ fn main() -> Result<(), Error<YourI2cError>> {
 
 ## MPU6050
 
-![image:width:100%](./examples/MPU6050/mpu6050_nrf/out.gif)
+![image:width:100%](../examples/MPU6050/mpu6050_nrf/out.gif)
 
 <!--end_slide-->
 
@@ -235,7 +240,7 @@ The below points explain why I have used Rust to create `hayasen`
 
 ## How to add a new sensor driver
 
-1. Fork `Vaishnav-Sabari-Gir`ish/Hayasen` and `Vaishnav-Sabari-Girish/Hayasen-Examples`.
+1. Fork `Vaishnav-Sabari-Girish/Hayasen` and `Vaishnav-Sabari-Girish/Hayasen-Examples` and clone the forked repositories.
 
 <!--new_lines: 1-->
 2. Add you sensor driver file inside the `src/` directory and name it as `<sensor>.rs`.
@@ -281,3 +286,19 @@ This is a 9-Axis IMU that can measure Aceleration (3-axis), Angular Velocity (3-
 <!--end_slide-->
 
 ![image:width:100%](./assets/ty.png)
+
+<!--end_slide-->
+
+# All my links
+
+<!--new_lines: 1-->
+1. **GitHub** : [](https://github.com/Vaishnav-Sabari-Girish)
+<!--new_lines: 1-->
+2. Linkedin: [](https://www.linkedin.com/in/vaishnav-sabari-girish/)
+
+<!--new_lines: 1-->
+3. Mastodon: [](https://defcon.social/@vaishnav)
+
+<!--new_lines: 1-->
+4. Bluesky: [](https://bsky.app/profile/vaishnav-dev.bsky.social)
+
