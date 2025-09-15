@@ -106,84 +106,13 @@ This project is dual-licensed under either:
 Found a bug or have a feature request? Please open an [issue](https://github.com/Vaishnav-Sabari-Girish/Hayasen/issues) on GitHub.
 
 
-## 🔮 Roadmap
+## TODO
 
-### 🎯 Short-term Goals (v0.2.0 - v0.5.0)
-
-- [ ] **Complete MPU9250 implementation and testing**
-  - [ ] Magnetometer support (AK8963)
-  - [x] Integration tests with hardware
-
-- [ ] **Add comprehensive test suite**
-  - [ ] Unit tests for all public APIs
-  - [x] Integration tests with mock I2C
-  - [x] Hardware-in-the-loop testing
-  - [x] Continuous integration setup
-  - [ ] Code coverage reporting
-
-- [ ] **Create more usage examples**
-  - [x] Basic sensor reading example
-  - [ ] Data logging application
-  - [ ] Multi-sensor fusion example
-  - [ ] RTOS integration examples
-
-### 🚀 Medium-term Goals (v0.6.0 - v0.9.0)
-
-- [ ] **Add MAX30102 heart rate sensor support**
-  - [ ] Heart rate monitoring
-  - [ ] Oxygen saturation (SpO2) measurement
-  - [ ] FIFO data reading
-  - [ ] Interrupt configuration
-  - [ ] Temperature reading
-
-- [ ] **Add CI/CD pipeline**
-  - [ ] GitHub Actions for testing
-  - [ ] Automated documentation deployment
-  - [ ] Release automation
-  - [ ] Crate publishing automation
-  - [ ] Cross-compilation testing
-
-### 🌟 Long-term Goals (v1.0.0+)
-
-- [ ] **Support for more sensor types**
-  - [ ] BME280 (Temperature, Humidity, Pressure)
-  - [ ] BMP180/BMP280 (Pressure)
-  - [ ] HMC5883L (Magnetometer)
-  - [ ] ADXL345 (Accelerometer)
-  - [ ] TMP36/TMP102 (Temperature)
-
-- [ ] **Advanced features**
-  - [ ] Sensor fusion algorithms
-  - [ ] Power management utilities
-  - [ ] Async/await support
-  - [ ] No-alloc mode for tiny systems
-  - [ ] WebAssembly support for simulation
-
-- [ ] **Ecosystem integration**
-  - [ ] Embassy framework support
-  - [ ] RTIC framework integration
-  - [ ] defmt logging support
-  - [ ] Probe-rs debugging support
-  - [ ] Platform-agnostic drivers
-
-### 📊 Version Timeline
-
-```mermaid
-timeline
-    title Hayasen Development Timeline
-    section v0.2.x
-        MPU9250 Completion : Magnetometer<br>Interrupts<br>FIFO
-        Testing Suite      : Unit Tests<br>Integration Tests
-    section v0.3.x
-        Examples           : Basic Examples<br>Advanced Use Cases
-        CI/CD              : GitHub Actions<br>Auto Documentation
-    section v0.4.x
-        MAX30102 Support   : Heart Rate<br>SpO2 Monitoring
-    section v0.5.x
-        Additional Sensors : BME280<br>HMC5883L
-    section v1.0.0
-        Stable API         : Production Ready<br>Full Documentation
-```
+- [ ] Add MPU9250 SPI Support 
+- [ ] Add MPU6050 SPI Support
+- [ ] Add support for BME280 (I2C and SPI)
+- [ ] Add support for HC-SR04 Ultrasonic Sensor
+- [ ] Add support for MQ135 Gas sensor
 
 
 ## 📊 Project Activity
