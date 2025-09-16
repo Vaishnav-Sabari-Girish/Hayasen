@@ -4,3 +4,6 @@
 [submodule "ppt"]
 	path = ppt
 	url = git@github.com:Vaishnav-Sabari-Girish/rust_bangalore_oct_2025.git
+[submodule "examples-mock"]
+	path = examples-mock
+	url = git@github.com:Vaishnav-Sabari-Girish/Hayasen-Examples-Mock
