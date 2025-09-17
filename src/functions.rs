@@ -8,6 +8,11 @@ pub mod mpu6050 {
     pub use crate::mpu6050::*;
 }
 
+#[cfg(feature = "bme280")]
+pub mod bme280 {
+    pub use crate::bme280::*;
+}
+
 use embedded_hal::i2c::I2c;
 use crate::error::Error;
 

@@ -4,6 +4,7 @@
 pub mod error;
 pub mod mpu9250;
 pub mod mpu6050;
+pub mod bme280;
 pub use error::Error;
 
 pub mod prelude {
@@ -13,6 +14,9 @@ pub mod prelude {
 
     #[cfg(feature = "mpu6050")]
     pub use crate::mpu6050;
+
+    #[cfg(feature = "bme280")]
+    pub use crate::bme280;
 }
 
 #[cfg(feature = "mpu9250")]
