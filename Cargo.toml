@@ -16,7 +16,7 @@ readme = "README.md"
 embedded-hal = "1.0.0"
 
 [features]
-default = []
+default = ["bmep280"]
 mpu9250 = []
 mpu6050 = []
-bme280 = []
+bmep280 = []

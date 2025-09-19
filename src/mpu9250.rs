@@ -6,18 +6,17 @@ use crate::error::Error;
 
 #[cfg(feature = "mpu9250")]
 mod registers {
-   pub const WHO_AM_I: u8 = 0x75;
-   pub const WHO_AM_I_VALUE: u8 = 0x74;
-   pub const PWR_MGMT_1: u8 = 0x6B;
-   pub const ACCEL_CONFIG: u8 = 0x1C;
-   pub const GYRO_CONFIG: u8 = 0x1B;
-   pub const ACCEL_XOUT_H: u8 = 0x3B;
-   pub const TEMP_OUT_H: u8 = 0x41;
-   pub const GYRO_XOUT_H: u8 = 0x43;
-   pub const SMPRT_DIV: u8 = 0x19;
-   pub const CONFIG: u8 = 0x1A;
+    pub const WHO_AM_I: u8 = 0x75;
+    pub const WHO_AM_I_VALUE: u8 = 0x74;
+    pub const PWR_MGMT_1: u8 = 0x6B;
+    pub const ACCEL_CONFIG: u8 = 0x1C;
+    pub const GYRO_CONFIG: u8 = 0x1B;
+    pub const ACCEL_XOUT_H: u8 = 0x3B;
+    pub const TEMP_OUT_H: u8 = 0x41;
+    pub const GYRO_XOUT_H: u8 = 0x43;
+    pub const SMPRT_DIV: u8 = 0x19;
+    pub const CONFIG: u8 = 0x1A;
 }
-
 
 #[cfg(feature = "mpu9250")]
 use registers::*;
@@ -56,11 +55,10 @@ pub enum DlpfConfig {
     Bandwidth184Hz,
 }
 
-
 #[cfg(feature = "mpu9250")]
 impl<I2C, E> Mpu9250<I2C>
-where 
-    I2C: I2c<Error = E>
+where
+    I2C: I2c<Error = E>,
 {
     pub fn new(i2c: I2C, address: u8) -> Self {
         Mpu9250 {
@@ -73,7 +71,8 @@ where
 
     pub fn verify_identity(&mut self) -> Result<(), Error<E>> {
         let mut buffer = [0u8];
-        self.i2c.write_read(self.address, &[WHO_AM_I], &mut buffer)?;
+        self.i2c
+            .write_read(self.address, &[WHO_AM_I], &mut buffer)?;
         if buffer[0] != WHO_AM_I_VALUE {
             return Err(Error::NotDetected);
         }
@@ -93,7 +92,8 @@ where
             AccelRange::Range8G => (0x10, 8.0 / 32768.0),
             AccelRange::Range16G => (0x18, 16.0 / 32768.0),
         };
-        self.i2c.write(self.address, &[ACCEL_CONFIG, config_value])?;
+        self.i2c
+            .write(self.address, &[ACCEL_CONFIG, config_value])?;
         self.accel_scale = scale;
         Ok(())
     }
@@ -110,7 +110,11 @@ where
         Ok(())
     }
 
-    pub fn initialize_sensor(&mut self, accel_range: AccelRange, gyro_range: GyroRange) -> Result<(), Error<E>> {
+    pub fn initialize_sensor(
+        &mut self,
+        accel_range: AccelRange,
+        gyro_range: GyroRange,
+    ) -> Result<(), Error<E>> {
         self.verify_identity()?;
         self.configure_power()?;
         self.setup_accelerometer(accel_range)?;
@@ -120,7 +124,8 @@ where
 
     pub fn read_accel_raw(&mut self) -> Result<[i16; 3], Error<E>> {
         let mut buffer = [0u8; 6];
-        self.i2c.write_read(self.address, &[ACCEL_XOUT_H], &mut buffer)?;
+        self.i2c
+            .write_read(self.address, &[ACCEL_XOUT_H], &mut buffer)?;
         let x = ((buffer[0] as i16) << 8) | buffer[1] as i16;
         let y = ((buffer[2] as i16) << 8) | buffer[3] as i16;
         let z = ((buffer[4] as i16) << 8) | buffer[5] as i16;
@@ -129,7 +134,8 @@ where
 
     pub fn read_gyro_raw(&mut self) -> Result<[i16; 3], Error<E>> {
         let mut buffer = [0u8; 6];
-        self.i2c.write_read(self.address, &[GYRO_XOUT_H], &mut buffer)?;
+        self.i2c
+            .write_read(self.address, &[GYRO_XOUT_H], &mut buffer)?;
         let x = ((buffer[0] as i16) << 8) | buffer[1] as i16;
         let y = ((buffer[2] as i16) << 8) | buffer[3] as i16;
         let z = ((buffer[4] as i16) << 8) | buffer[5] as i16;
@@ -138,7 +144,8 @@ where
 
     pub fn read_temp_raw(&mut self) -> Result<i16, Error<E>> {
         let mut buffer = [0u8; 2];
-        self.i2c.write_read(self.address, &[TEMP_OUT_H], &mut buffer)?;
+        self.i2c
+            .write_read(self.address, &[TEMP_OUT_H], &mut buffer)?;
         let temp = ((buffer[0] as i16) << 8) | buffer[1] as i16;
         Ok(temp)
     }

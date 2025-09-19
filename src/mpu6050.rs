@@ -53,7 +53,7 @@ pub enum GyroRange {
 pub enum DlpfConfig {
     Bandwidth260Hz,
     Bandwidth184Hz,
-    Bandwidth94Hz,   // Added more DLPF options available in MPU6050
+    Bandwidth94Hz, // Added more DLPF options available in MPU6050
     Bandwidth44Hz,
     Bandwidth21Hz,
     Bandwidth10Hz,
@@ -62,8 +62,8 @@ pub enum DlpfConfig {
 
 #[cfg(feature = "mpu6050")]
 impl<I2C, E> Mpu6050<I2C>
-where 
-    I2C: I2c<Error = E>
+where
+    I2C: I2c<Error = E>,
 {
     pub fn new(i2c: I2C, address: u8) -> Self {
         Mpu6050 {
@@ -76,18 +76,19 @@ where
 
     pub fn verify_identity(&mut self) -> Result<(), Error<E>> {
         let mut buffer = [0u8];
-        self.i2c.write_read(self.address, &[WHO_AM_I], &mut buffer)?;
+        self.i2c
+            .write_read(self.address, &[WHO_AM_I], &mut buffer)?;
 
         match buffer[0] {
             0x68 | 0x69 | 0x70 | 0x98 => Ok(()),
-            _ => Err(Error::NotDetected)
+            _ => Err(Error::NotDetected),
         }
     }
 
     pub fn configure_power(&mut self) -> Result<(), Error<E>> {
         // Reset device first, then set clock source to PLL with X axis gyroscope reference
         self.i2c.write(self.address, &[PWR_MGMT_1, 0x80])?; // Reset
-                                                            // Small delay would be needed here in real implementation
+        // Small delay would be needed here in real implementation
         let config = 0x01; // Clock source: PLL with X axis gyroscope reference
         self.i2c.write(self.address, &[PWR_MGMT_1, config])?;
         Ok(())
@@ -100,7 +101,8 @@ where
             AccelRange::Range8G => (0x10, 8.0 / 32768.0),
             AccelRange::Range16G => (0x18, 16.0 / 32768.0),
         };
-        self.i2c.write(self.address, &[ACCEL_CONFIG, config_value])?;
+        self.i2c
+            .write(self.address, &[ACCEL_CONFIG, config_value])?;
         self.accel_scale = scale;
         Ok(())
     }
@@ -117,7 +119,11 @@ where
         Ok(())
     }
 
-    pub fn initialize_sensor(&mut self, accel_range: AccelRange, gyro_range: GyroRange) -> Result<(), Error<E>> {
+    pub fn initialize_sensor(
+        &mut self,
+        accel_range: AccelRange,
+        gyro_range: GyroRange,
+    ) -> Result<(), Error<E>> {
         self.verify_identity()?;
         self.configure_power()?;
         self.setup_accelerometer(accel_range)?;
@@ -127,7 +133,8 @@ where
 
     pub fn read_accel_raw(&mut self) -> Result<[i16; 3], Error<E>> {
         let mut buffer = [0u8; 6];
-        self.i2c.write_read(self.address, &[ACCEL_XOUT_H], &mut buffer)?;
+        self.i2c
+            .write_read(self.address, &[ACCEL_XOUT_H], &mut buffer)?;
         let x = ((buffer[0] as i16) << 8) | buffer[1] as i16;
         let y = ((buffer[2] as i16) << 8) | buffer[3] as i16;
         let z = ((buffer[4] as i16) << 8) | buffer[5] as i16;
@@ -136,7 +143,8 @@ where
 
     pub fn read_gyro_raw(&mut self) -> Result<[i16; 3], Error<E>> {
         let mut buffer = [0u8; 6];
-        self.i2c.write_read(self.address, &[GYRO_XOUT_H], &mut buffer)?;
+        self.i2c
+            .write_read(self.address, &[GYRO_XOUT_H], &mut buffer)?;
         let x = ((buffer[0] as i16) << 8) | buffer[1] as i16;
         let y = ((buffer[2] as i16) << 8) | buffer[3] as i16;
         let z = ((buffer[4] as i16) << 8) | buffer[5] as i16;
@@ -145,7 +153,8 @@ where
 
     pub fn read_temp_raw(&mut self) -> Result<i16, Error<E>> {
         let mut buffer = [0u8; 2];
-        self.i2c.write_read(self.address, &[TEMP_OUT_H], &mut buffer)?;
+        self.i2c
+            .write_read(self.address, &[TEMP_OUT_H], &mut buffer)?;
         let temp = ((buffer[0] as i16) << 8) | buffer[1] as i16;
         Ok(temp)
     }
@@ -196,7 +205,8 @@ where
 
     pub fn enter_sleep_mode(&mut self) -> Result<(), Error<E>> {
         let mut buffer = [0u8];
-        self.i2c.write_read(self.address, &[PWR_MGMT_1], &mut buffer)?;
+        self.i2c
+            .write_read(self.address, &[PWR_MGMT_1], &mut buffer)?;
         let new_config = buffer[0] | 0x40; // Set SLEEP bit
         self.i2c.write(self.address, &[PWR_MGMT_1, new_config])?;
         Ok(())
@@ -204,7 +214,8 @@ where
 
     pub fn wake_up(&mut self) -> Result<(), Error<E>> {
         let mut buffer = [0u8];
-        self.i2c.write_read(self.address, &[PWR_MGMT_1], &mut buffer)?;
+        self.i2c
+            .write_read(self.address, &[PWR_MGMT_1], &mut buffer)?;
         let new_config = buffer[0] & 0xBF; // Clear SLEEP bit
         self.i2c.write(self.address, &[PWR_MGMT_1, new_config])?;
         Ok(())
@@ -220,7 +231,8 @@ where
 
     pub fn enable_temperature_sensor(&mut self) -> Result<(), Error<E>> {
         let mut buffer = [0u8];
-        self.i2c.write_read(self.address, &[PWR_MGMT_1], &mut buffer)?;
+        self.i2c
+            .write_read(self.address, &[PWR_MGMT_1], &mut buffer)?;
         let new_config = buffer[0] & 0xF7; // Clear TEMP_DIS bit
         self.i2c.write(self.address, &[PWR_MGMT_1, new_config])?;
         Ok(())
@@ -228,7 +240,8 @@ where
 
     pub fn disable_temperature_sensor(&mut self) -> Result<(), Error<E>> {
         let mut buffer = [0u8];
-        self.i2c.write_read(self.address, &[PWR_MGMT_1], &mut buffer)?;
+        self.i2c
+            .write_read(self.address, &[PWR_MGMT_1], &mut buffer)?;
         let new_config = buffer[0] | 0x08; // Set TEMP_DIS bit
         self.i2c.write(self.address, &[PWR_MGMT_1, new_config])?;
         Ok(())

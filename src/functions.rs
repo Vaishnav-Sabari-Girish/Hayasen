@@ -8,7 +8,7 @@ pub mod mpu6050 {
     pub use crate::mpu6050::*;
 }
 
-#[cfg(feature = "bme280")]
+#[cfg(feature = "bmep280")]
 pub mod bme280 {
     pub use crate::bme280::*;
 }
@@ -59,6 +59,23 @@ pub struct MPU6050Functions<I2C, E> {
     pub disable_temperature_sensor: fn(&mut mpu6050::Mpu6050<I2C>) -> Result<(), Error<E>>,
 }
 
+#[cfg(feature = "bmep280")]
+#[cfg_attr(docsrs, doc(cfg(feature = "bmep280")))]
+pub struct BME280Functions<I2C, E> {
+    pub verify_identity: fn(&mut bme280::Bme280<I2C>) -> Result<(), Error<E>>,
+    pub reset: fn(&mut bme280::Bme280<I2C>) -> Result<(), Error<E>>,
+    pub configure: fn(&mut bme280::Bme280<I2C>, bme280::Oversampling, bme280::Oversampling, bme280::Oversampling, bme280::Mode, bme280::StandbyTime, bme280::FilterCoefficient) -> Result<(), Error<E>>,
+    pub initialize_sensor: fn(&mut bme280::Bme280<I2C>, bme280::Oversampling, bme280::Ooversampling, bme280::Oversampling, bme280::Mode, bme280::StandbyTime, bme280::FilterCoefficient) -> Result<(), Error<E>>,
+    pub is_measuring: fn(&mut bme280::Bme280<I2C>) -> Result<bool, Error<E>>,
+    pub is_updating: fn(&mut bme280::Bme280<I2C>) -> Result<bool, Error<E>>,
+    pub read_all: fn(&mut bme280::Bme280<I2C>) -> Result<(f32, f32, Option<f32>), Error<E>>,
+    pub read_temperature: fn(&mut bme280::Bme280<I2C>) -> Result<f32, Error<E>>,
+    pub read_pressure: fn(&mut bme280::Bme280<I2C>) -> Result<f32, Error<E>>,
+    pub read_humidity: fn(&mut bme280::Bme280<I2C>) -> Result<f32, Error<E>>,
+    pub trigger_measurement: fn(&mut bme280::Bme280<I2C>) -> Result<(), Error<E>>,
+    pub set_mode: fn(&mut bme280::Bme280<I2C>, bme280::Mode) -> Result<(), Error<E>>,
+}
+
 pub struct HayasenFunctions<I2C, E> {
     #[cfg(feature = "mpu9250")]
     #[cfg_attr(docsrs, doc(cfg(feature = "mpu9250")))]
@@ -67,6 +84,10 @@ pub struct HayasenFunctions<I2C, E> {
     #[cfg(feature = "mpu6050")]
     #[cfg_attr(docsrs, doc(cfg(feature = "mpu6050")))]
     pub mpu6050: MPU6050Functions<I2C, E>,
+    
+    #[cfg(feature = "bmep280")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "bmep280")))]
+    pub bme280: BME280Functions<I2C, E>,
 }
 
 impl<I2C, E> HayasenFunctions<I2C, E> 
@@ -114,6 +135,22 @@ where
                 disable_sleep: mpu6050::Mpu6050::disable_sleep,
                 enable_temperature_sensor: mpu6050::Mpu6050::enable_temperature_sensor,
                 disable_temperature_sensor: mpu6050::Mpu6050::disable_temperature_sensor,
+            },
+            
+            #[cfg(feature = "bmep280")]
+            bme280: BME280Functions {
+                verify_identity: bme280::Bme280::verify_identity,
+                reset: bme280::Bme280::reset,
+                configure: bme280::Bme280::configure,
+                initialize_sensor: bme280::Bme280::initialize_sensor,
+                is_measuring: bme280::Bme280::is_measuring,
+                is_updating: bme280::Bme280::is_updating,
+                read_all: bme280::Bme280::read_all,
+                read_temperature: bme280::Bme280::read_temperature,
+                read_pressure: bme280::Bme280::read_pressure,
+                read_humidity: bme280::Bme280::read_humidity,
+                trigger_measurement: bme280::Bme280::trigger_measurement,
+                set_mode: bme280::Bme280::set_mode,
             }
         }
     }
