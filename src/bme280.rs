@@ -1,5 +1,9 @@
 #[cfg(feature = "bmep280")]
 use embedded_hal::i2c::I2c;
+
+#[cfg(feature = "bmep280")]
+use embedded_hal::delay::DelayNs;
+
 #[cfg(feature = "bmep280")]
 use crate::error::Error;
 
@@ -182,13 +186,21 @@ where
         self.device_type
     }
 
-    pub fn reset(&mut self) -> Result<(), Error<E>> {
+    pub fn reset<D>(&mut self, delay: &mut D) -> Result<(), Error<E>> 
+        where 
+            D: DelayNs
+    {
         self.i2c.write(self.address, &[RESET, 0xB6])?;
+        delay.delay_ms(10);
         Ok(())
     }
 
-    fn read_calibration_data(&mut self) -> Result<(), Error<E>> {
+    fn read_calibration_data<D>(&mut self, delay: &mut D) -> Result<(), Error<E>> 
+        where 
+            D: DelayNs
+    {
         // Read Temperature and Pressure Calibration (both BME280 and BMP280)
+        delay.delay_ms(5);
         let mut calib_data = [0u8; 26];
         self.i2c
             .write_read(self.address, &[CALIB00], &mut calib_data)?;
@@ -206,6 +218,9 @@ where
         self.calibration.dig_p9 = i16::from_le_bytes([calib_data[22], calib_data[23]]);
         self.calibration.dig_h1 = calib_data[25];
 
+        if self.calibration.dig_t1 == 0 {
+            return Err(Error::CalibrationFailed);
+        }
         // Read humidity calibration ONLY for BME280
         if self.device_type == DeviceType::Bme280 {
             let mut hum_calib = [0u8; 7];
@@ -219,6 +234,10 @@ where
         }
 
         Ok(())
+    }
+
+    pub fn validate_calibration(&self) -> bool {
+        self.calibration.dig_t1 != 0 && self.calibration.dig_p1 != 0
     }
 
     pub fn configure(
@@ -299,18 +318,34 @@ where
         Ok(())
     }
 
-    pub fn initialize_sensor(
+    pub fn initialize_sensor<D>(
         &mut self,
+        delay: &mut D,
         temp_oversampling: Oversampling,
         press_oversampling: Oversampling,
         hum_oversampling: Oversampling,
         mode: Mode,
         standby_time: StandbyTime,
         filter: FilterCoefficient,
-    ) -> Result<DeviceType, Error<E>> {
+    ) -> Result<DeviceType, Error<E>> 
+        where 
+            D: DelayNs
+    {
+
+        //Verify device identity
         let device_type = self.verify_identity()?;
-        self.reset()?;
-        self.read_calibration_data()?;
+
+        // Reset sensor
+        self.reset(delay)?;
+
+        // Read calibration data
+        self.read_calibration_data(delay)?;
+
+        // Validate calibration
+        if !self.validate_calibration() {
+            return Err(Error::CalibrationFailed);
+        }
+
         self.configure(
             temp_oversampling,
             press_oversampling,
@@ -344,6 +379,11 @@ where
         let temp_raw =
             ((buffer[3] as i32) << 12) | ((buffer[4] as i32) << 4) | ((buffer[5] as i32) >> 4);
         let hum_raw = ((buffer[6] as i32) << 8) | buffer[7] as i32;
+
+        if press_raw == 0x80000 || temp_raw == 0x80000 {
+            return Err(Error::NotReady);
+        }
+
         Ok([press_raw, temp_raw, hum_raw, 0, 0, 0, 0, 0])
     }
 
@@ -413,10 +453,23 @@ where
         humidity as f32 / 1024.0
     }
 
-    pub fn read_all(&mut self) -> Result<(f32, f32, Option<f32>), Error<E>> {
+    pub fn read_all<D>(&mut self, delay: &mut D) -> Result<(f32, f32, Option<f32>), Error<E>> 
+        where 
+            D: DelayNs
+    {
         if self.config.mode == Mode::Forced {
             self.trigger_measurement()?;
-            while self.is_measuring()? {}
+
+            let mut timeout_count = 0;
+            while self.is_measuring()? {
+                delay.delay_ms(1);
+                timeout_count += 1;
+                if timeout_count > 100 {
+                    return Err(Error::Timeout);
+                }
+            }
+        } else {
+            delay.delay_ms(10);
         }
         let raw_data = self.read_raw_data()?;
         let (temperature, t_fine) = self.compensate_temperature(raw_data[1]);

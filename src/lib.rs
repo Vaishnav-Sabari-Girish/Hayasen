@@ -1,6 +1,7 @@
 #![no_std]
 #![no_main]
 
+
 pub mod bme280;
 pub mod error;
 pub mod mpu6050;
@@ -187,24 +188,29 @@ pub mod bme280_hayasen {
     use super::error::Error;
     use super::bme280;
     use embedded_hal::i2c::I2c;
-    pub fn create_default<I2C, E>(i2c: I2C, address: u8) -> Result<bme280::Bme280<I2C>, Error<E>>
+    use embedded_hal::delay::DelayNs;
+    pub fn create_default<I2C, E, D>(i2c: I2C, address: u8, delay: &mut D) -> Result<bme280::Bme280<I2C>, Error<E>>
         where 
             I2C: I2c<Error = E>,
+            D: DelayNs
     {
         let mut sensor = bme280::Bme280::new(i2c, address);
         sensor.initialize_sensor(
-            bme280::Oversampling::X1,
-            bme280::Oversampling::X1,
-            bme280::Oversampling::X1,
+            delay,
+            bme280::Oversampling::X2,
+            bme280::Oversampling::X2,
+            bme280::Oversampling::X2,
             bme280::Mode::Normal,
             bme280::StandbyTime::Ms1000,
-            bme280::FilterCoefficient::C16,
+            bme280::FilterCoefficient::Off,
         )?;
 
         Ok(sensor)
     }
 
-    pub fn create_default_with_config<I2C, E>(
+
+    pub fn create_default_with_config<I2C, E, D>(
+        delay: &mut D,
         i2c: I2C,
         address: u8,
         temp_oversampling: bme280::Oversampling,
@@ -216,9 +222,11 @@ pub mod bme280_hayasen {
     ) -> Result<bme280::Bme280<I2C>, Error<E>>
         where 
             I2C: I2c<Error = E>,
+            D: DelayNs
     {
         let mut sensor = bme280::Bme280::new(i2c, address);
         sensor.initialize_sensor(
+            delay,
             temp_oversampling, 
             press_oversampling, 
             hum_oversampling, 
@@ -251,11 +259,12 @@ pub mod bme280_hayasen {
         sensor.read_humidity()
     }
 
-    pub fn read_all<I2C, E>(sensor: &mut bme280::Bme280<I2C>) -> Result<(f32, f32, Option<f32>), Error<E>>
+    pub fn read_all<I2C, E, D>(sensor: &mut bme280::Bme280<I2C>, delay: &mut D) -> Result<(f32, f32, Option<f32>), Error<E>>
         where 
             I2C: I2c<Error = E>,
+            D: DelayNs,
     {
-        sensor.read_all()
+        sensor.read_all(delay)
     }
 
     pub fn trigger_measurement<I2C, E>(sensor: &mut bme280::Bme280<I2C>) -> Result<(), Error<E>>
@@ -279,11 +288,12 @@ pub mod bme280_hayasen {
         sensor.set_mode(mode)
     }
 
-    pub fn reset_sensor<I2C, E>(sensor: &mut bme280::Bme280<I2C>) -> Result<(), Error<E>>
+    pub fn reset_sensor<I2C, E, D>(sensor: &mut bme280::Bme280<I2C>, delay: &mut D) -> Result<(), Error<E>>
         where 
-            I2C: I2c<Error = E>
+            I2C: I2c<Error = E>,
+            D: DelayNs,
     {
-        sensor.reset()
+        sensor.reset(delay)
     }
 
 }

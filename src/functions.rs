@@ -62,10 +62,10 @@ pub struct MPU6050Functions<I2C, E> {
 #[cfg(feature = "bmep280")]
 #[cfg_attr(docsrs, doc(cfg(feature = "bmep280")))]
 pub struct BME280Functions<I2C, E> {
-    pub verify_identity: fn(&mut bme280::Bme280<I2C>) -> Result<(), Error<E>>,
+    pub verify_identity: fn(&mut bme280::Bme280<I2C>) -> Result<bme280::DeviceType, Error<E>>,
     pub reset: fn(&mut bme280::Bme280<I2C>) -> Result<(), Error<E>>,
     pub configure: fn(&mut bme280::Bme280<I2C>, bme280::Oversampling, bme280::Oversampling, bme280::Oversampling, bme280::Mode, bme280::StandbyTime, bme280::FilterCoefficient) -> Result<(), Error<E>>,
-    pub initialize_sensor: fn(&mut bme280::Bme280<I2C>, bme280::Oversampling, bme280::Ooversampling, bme280::Oversampling, bme280::Mode, bme280::StandbyTime, bme280::FilterCoefficient) -> Result<(), Error<E>>,
+    pub initialize_sensor: fn(&mut bme280::Bme280<I2C>, bme280::Oversampling, bme280::Oversampling, bme280::Oversampling, bme280::Mode, bme280::StandbyTime, bme280::FilterCoefficient) -> Result<bme280::DeviceType, Error<E>>,
     pub is_measuring: fn(&mut bme280::Bme280<I2C>) -> Result<bool, Error<E>>,
     pub is_updating: fn(&mut bme280::Bme280<I2C>) -> Result<bool, Error<E>>,
     pub read_all: fn(&mut bme280::Bme280<I2C>) -> Result<(f32, f32, Option<f32>), Error<E>>,

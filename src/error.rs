@@ -6,7 +6,10 @@ pub enum Error<E> {
     InvalidData,
     NotSupported,
     NotDetected,
+    NotReady,
     ConfigError,
+    CalibrationFailed,
+    Timeout,
     SensorSpecific(&'static str),
 }
 
@@ -26,7 +29,10 @@ where
             Error::InvalidData => write!(f, "Invalid Data received from sensor"),
             Error::NotDetected => write!(f, "Sensor not detected at address"),
             Error::NotSupported => write!(f, "Sensor not Supported"),
+            Error::NotReady => write!(f, "Sensor not Ready"),
             Error::ConfigError => write!(f, "Invalid Configuration"),
+            Error::CalibrationFailed => write!(f, "Sensor calibration failed"),
+            Error::Timeout => write!(f, "Timeout Error"),
             Error::SensorSpecific(msg) => write!(f, "Sensor Error: {}", msg),
         }
     }
