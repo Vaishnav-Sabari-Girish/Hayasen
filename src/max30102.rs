@@ -382,6 +382,49 @@ where
         Ok(count)
     }
 
+    pub fn read_fifo_sample(&mut self) -> Result<Option<FifoSample>, Error<E>> {
+        let available = self.get_available_sample_count()?;
 
+        if available == 0 {
+            return Ok(None);
+        }
+
+        // Read 6 bytes for SpO2 mode (3 bytes IR + 3 bytes Red)
+        let mut buffer = [0u8; 6];
+        self.i2c.write_read(self.address, &[FIFO_DATA], &mut buffer)?;
+
+        // Parse the data with proper 18-bit masking
+        let ir = (((buffer[0] as u32) << 16) | 
+            ((buffer[1] as u32) << 8) | 
+            (buffer[2] as u32)) & 0x03FFFF;   // Mask to 18-bits
+
+        let red = (((buffer[3] as u32) << 16) |
+            ((buffer[4] as u32) << 8) |
+            (buffer[5] as u32)) & 0x03FFFF;  // Mask to 18-bits
+
+        Ok(Some(FifoSample { red: red, ir: ir }))
+    }
+
+    pub fn read_fifo_batch(&mut self, samples: &mut [FifoSample]) -> Result<usize, Error<E>> {
+        let available = self.get_available_sample_count()?;
+
+        let to_read = available.min(samples.len());
+
+        if to_read == 0 {
+            return Ok(0);
+        }
+
+        // Read all samples in one burst for efficiency
+        let bytes_to_read = to_read * 6;  // 6 bytes per sample in SpO2 read
+        let mut buffer = vec![0u8; bytes_to_read];
+
+        // Read the first regoster to set the address
+        self.i2c.write(self.address, &[FIFO_DATA])?;
+
+        // Now read the data
+        self.i2c.read(self.address, &mut buffer)?;
+
+        // Parse the samples
+    }
 
 }
