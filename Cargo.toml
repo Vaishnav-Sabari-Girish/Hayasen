@@ -16,6 +16,7 @@ readme = "README.md"
 embedded-hal = "1.0.0"
 
 [features]
-default = []
+default = ["max30102"]
 mpu9250 = []
 mpu6050 = []
+max30102 = []

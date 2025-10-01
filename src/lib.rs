@@ -4,6 +4,7 @@
 pub mod error;
 pub mod mpu9250;
 pub mod mpu6050;
+pub mod max30102;
 pub use error::Error;
 
 pub mod prelude {

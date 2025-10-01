@@ -8,6 +8,11 @@ pub mod mpu6050 {
     pub use crate::mpu6050::*;
 }
 
+#[cfg(feature = "max30102")]
+pub mod max30102 {
+    pub use crate::max30102::*;
+}
+
 use embedded_hal::i2c::I2c;
 use crate::error::Error;
 
