@@ -193,22 +193,17 @@
 <p>Convenience methods (<code>is_i2c_error</code>, <code>is_config_error</code>, <code>into_i2c_error</code>) for error inspection and recovery.</p>
 </li>
 </ul>
-<h3 id="2-mpu9250-sensor-support"><a class="header" href="#2-mpu9250-sensor-support">2. <strong>MPU9250 Sensor Support</strong></a></h3>
+<h3 id="2-multi-sensor-support"><a class="header" href="#2-multi-sensor-support">2. <strong>Multi-Sensor Support</strong></a></h3>
 <ul>
-<li>
-<p>Initial implementation supports the MPU9250 IMU sensor.</p>
-</li>
-<li>
-<p>Provides methods for:</p>
+<li>Current implementation supports the MPU9250 &amp; MPU6050 IMU sensors and also the MAX30102 Pulse Oximeter and Heart Rate monitor sensor.</li>
+<li>Provides methods for:
 <ul>
 <li>Initialization and configuration of accelerometer, gyroscope, and magnetometer.</li>
 <li>Reading raw and processed data from all sensor units.</li>
 <li>Power management (e.g., wake/sleep modes).</li>
 </ul>
 </li>
-<li>
-<p>Modular driver structure allows easy adaptation to similar IMU devices.</p>
-</li>
+<li>Modular driver structure allows easy adaptation to similar IMU devices.</li>
 </ul>
 <h3 id="3-modular-design-for-sensor-expansion"><a class="header" href="#3-modular-design-for-sensor-expansion">3. <strong>Modular Design for Sensor Expansion</strong></a></h3>
 <ul>
