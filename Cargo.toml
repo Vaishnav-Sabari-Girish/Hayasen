@@ -20,3 +20,12 @@ default = []
 mpu9250 = []
 mpu6050 = []
 max30102 = []
+
+[package]
+include = [
+  "src/*",
+  "Cargo.toml",
+  "README.md",
+  "LICENSE*",
+  "assets/*",
+]
