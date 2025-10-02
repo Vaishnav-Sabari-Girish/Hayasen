@@ -10,6 +10,13 @@ documentation = "http://vaishnav.world/Hayasen/"
 keywords = ["embedded", "sensors", "driver", "no-std"]
 categories = ["embedded", "no-std", "hardware-support"]
 readme = "README.md"
+include = [
+  "src/*",
+  "Cargo.toml",
+  "README.md",
+  "LICENSE*",
+  "assets/*",
+]
 
 
 [dependencies]
@@ -20,12 +27,3 @@ default = []
 mpu9250 = []
 mpu6050 = []
 max30102 = []
-
-[package]
-include = [
-  "src/*",
-  "Cargo.toml",
-  "README.md",
-  "LICENSE*",
-  "assets/*",
-]
