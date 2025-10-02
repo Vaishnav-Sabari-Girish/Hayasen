@@ -19,11 +19,10 @@ Hayasen is designed to be a lightweight, modular sensor driver crate with a focu
   * Sensor-specific errors
 * Convenience methods (`is_i2c_error`, `is_config_error`, `into_i2c_error`) for error inspection and recovery.
 
-### 2. **MPU9250 Sensor Support**
+### 2. **Multi-Sensor Support**
 
-* Initial implementation supports the MPU9250 IMU sensor.
+* Current implementation supports the MPU9250 & MPU6050 IMU sensors and also the MAX30102 Pulse Oximeter and Heart Rate monitor sensor.
 * Provides methods for:
-
   * Initialization and configuration of accelerometer, gyroscope, and magnetometer.
   * Reading raw and processed data from all sensor units.
   * Power management (e.g., wake/sleep modes).
