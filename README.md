@@ -20,6 +20,7 @@ It provides unified, type-safe interfaces for various sensors with a focus on ea
 
 - **MPU9250** - 9-axis Inertial Measurement Unit (accelerometer, gyroscope, temperature, magnetometer) - *Work in Progress*
 - **MPU6050** - 6-axis Inertial Measurement Unit (accelerometer, gyroscope, temperature)
+- **MAX30102** - Pulse Oximeter, Heart Rate Monitor, Temperature Sensor
 
 
 ## Progress 

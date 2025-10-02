@@ -4,4 +4,5 @@
 | -------------- | --------------- |
 | MPU9250 inertial measurement unit | Glyph C6 |
 | MPU6050 inertial measurement unit | Nordic nRF52840 Development Kit |
+| MAX30102 Pulse Oximeter and Heart Rate monitor | Glyph C6|
 
