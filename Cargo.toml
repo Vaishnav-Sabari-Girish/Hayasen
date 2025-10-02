@@ -19,3 +19,4 @@ embedded-hal = "1.0.0"
 default = []
 mpu9250 = []
 mpu6050 = []
+max30102 = []
