@@ -8,6 +8,8 @@
 [![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE-APACHE)
 [![Minimum Supported Rust Version](https://img.shields.io/badge/MSRV-1.60.0-blue.svg)](https://rust-lang.org)
 
+Hayasen is now on the [awesome-embedded-rust](https://github.com/rust-embedded/awesome-embedded-rust) repository. Find it here [awesome-embedded-rust](https://github.com/rust-embedded/awesome-embedded-rust?tab=readme-ov-file#no-std-crates)
+
 > ⚠️ **Warning: Early Development Stage**
 > 
 > This library is currently under active development and has not been thoroughly tested.
