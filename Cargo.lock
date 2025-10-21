@@ -10,7 +10,7 @@ checksum = "361a90feb7004eca4019fb28352a9465666b24f840f5c3cddf0ff13920590b89"
 
 [[package]]
 name = "hayasen"
-version = "0.0.9"
+version = "0.1.0"
 dependencies = [
  "embedded-hal",
 ]
