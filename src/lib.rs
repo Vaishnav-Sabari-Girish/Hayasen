@@ -2,9 +2,16 @@
 #![no_main]
 
 pub mod error;
+
+#[cfg(feature = "mpu9250")]
 pub mod mpu9250;
+
+#[cfg(feature = "mpu6050")]
 pub mod mpu6050;
+
+#[cfg(feature = "max30102")]
 pub mod max30102;
+
 pub use error::Error;
 
 pub mod prelude {
